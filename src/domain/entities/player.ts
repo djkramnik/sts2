@@ -10,6 +10,7 @@ type PlayerState = {
 }
 
 export class Player {
+  readonly enemy: boolean
   maxHp: number
   hp: number
   mana: number
@@ -19,7 +20,9 @@ export class Player {
   hand: Card[]
   block: number
   base: PlayerState
-  constructor({ maxHp, hp, mana, deck, block }: PlayerState) {
+
+  constructor({ maxHp, hp, mana, deck, block }: PlayerState, enemy?: boolean) {
+    this.enemy = enemy === true
     this.maxHp = maxHp
     this.hp = hp
     this.mana = mana
@@ -68,7 +71,7 @@ export class Player {
     this.hand.push(card)
     return true
   }
-  // move one particular card from hand to discard pil
+  // move one particular card from hand to discard pile
   // if we can't return false
   discardOne(index: number): boolean {
     const discarded = this.hand.splice(index, 1)
