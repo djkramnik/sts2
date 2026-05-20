@@ -5,6 +5,7 @@ type PlayerState = {
   hp: number
   mana: number
   deck: Card[]
+  block: number
 }
 
 export class Player {
@@ -12,13 +13,15 @@ export class Player {
   hp: number
   mana: number
   deck: Card[]
+  block: number
   base: PlayerState
-  constructor({ maxHp, hp, mana, deck }: PlayerState) {
+  constructor({ maxHp, hp, mana, deck, block }: PlayerState) {
     this.maxHp = maxHp
     this.hp = hp
     this.mana = mana
     this.deck = deck
-    this.base = {maxHp, hp, mana, deck}
+    this.block = block
+    this.base = {maxHp, hp, mana, deck, block}
   }
 
   restoreBase() {
@@ -26,6 +29,19 @@ export class Player {
     this.hp = this.base.hp
     this.mana = this.base.mana
     this.deck = this.base.deck
+    this.block = this.base.block
   }
 
+  raiseBlock(b: number) {
+    this.block += b
+  }
+  removeBlock(b: number) {
+    this.block = Math.max(0, this.block - b)
+  }
+  raiseHp(hp: number) {
+    this.hp = Math.min(this.maxHp, this.hp + hp)
+  }
+  removeHp(damage: number) {
+    this.hp = Math.max(0, this.hp - damage)
+  }
 }
