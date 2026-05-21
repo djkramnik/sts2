@@ -1,8 +1,7 @@
-import { Player } from "../entities/player";
+// the responsibility for fiddling with the players and enemies, applying card effects etc within the context of a match
 
-type Orchestrator = {
-  playCards: (playerToMove: Player, target: Player) => Promise<void>
-}
+import { Card } from "../../domain/entities/card";
+import { Player } from "../../domain/entities/player";
 
 export class Match {
   winner: 0 | 1 | null // 0 = player wins, 1 = enemy wins, null = match not over
@@ -39,7 +38,7 @@ export class Match {
     // we have logic, at first pure random, for players playing their cards.
     // enemies will follow a particular pattern that has to be established by orchestrator
 
-    await this.orchestrator.playCards(playerToMove, otherPlayer)
+    await this.orchestrator.playTurn(playerToMove, otherPlayer, this.turn)
 
     // if we don't have a winner yet, advance turn
     this.winner = this.isGameOver()
@@ -56,5 +55,35 @@ export class Match {
       return 0
     }
     return null
+  }
+}
+
+class Orchestrator {
+  match: Match | null
+  async runMatch(player: Player, enemy: Player): Promise<0 | 1> {
+    this.match = new Match(player, enemy, this)
+    while(this.match.winner === null) {
+      await this.match.tick()
+    }
+    return this.match.winner
+  }
+  // err.. this doesn't handle multi enemy fights
+  // this also assumes that the player has their hand dealt to them from draw pile already
+  async playTurn(playerToMove: Player, otherPlayer: Player, turn: number) {
+    playerToMove.setBaseMana(turn)
+    while(playerToMove.mana && playerToMove.hand.length > 0) {
+      // need randomPick
+      const firstCardCanPlay = playerToMove.hand.find(c => c.cost <= playerToMove.mana)
+      if (!firstCardCanPlay) {
+        break
+      }
+      playerToMove.removeMana(firstCardCanPlay.cost)
+      this.applyCard(playerToMove, otherPlayer, firstCardCanPlay)
+    }
+  }
+  applyCard(source: Player, target: Player, card: Card) {
+    const { attack, defense } = card
+    target.removeHp(attack)
+    source.raiseBlock(defense)
   }
 }

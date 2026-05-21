@@ -56,6 +56,15 @@ export class Player {
   removeHp(damage: number) {
     this.hp = Math.max(0, this.hp - damage)
   }
+  setBaseMana(turn: number) {
+    return this.base.mana
+  }
+  raiseMana(m: number) {
+    this.mana += m
+  }
+  removeMana(m: number) {
+    this.mana = Math.max(0, this.mana - m)
+  }
 
   // move one card from draw pile to hand
   // for some reason we can't return false
