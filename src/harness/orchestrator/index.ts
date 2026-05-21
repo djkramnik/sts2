@@ -44,6 +44,8 @@ export class Match {
     console.log('player: ', String(this.player))
     console.log('enemy:', String(this.enemy))
 
+    playerToMove.afterTurn()
+
     await this.tick(delayMs)
 
     // if we don't have a winner yet, advance turn

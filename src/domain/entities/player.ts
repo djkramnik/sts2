@@ -85,6 +85,7 @@ export class Player {
   // move one particular card from hand to discard pile
   // if we can't return false
   discardOne(index: number): boolean {
+    // mutates the hand array, removing the card just fyi
     const discarded = this.hand.splice(index, 1)
     if (discarded.length === 0) {
       console.error('tried to discard card from hand but index cannot be found')
@@ -106,6 +107,17 @@ export class Player {
     this.drawPile = shuffle(this.deck.slice(0))
     this.discardPile = []
     this.hp = Math.min(this.maxHp, this.hp + 6)
+  }
+
+  afterTurn() {
+    this.mana = this.base.mana
+    this.block = this.base.block
+    for(let i = 0; i < this.hand.length; i += 1) {
+      if (!this.discardOne(i)) {
+        console.error('wtf, discard after turn?')
+        break
+      }
+    }
   }
 
 }
