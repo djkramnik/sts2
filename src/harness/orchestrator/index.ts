@@ -21,7 +21,7 @@ export class Match {
   }
   // find the player whose turn it is
   //
-  async tick() {
+  async tick(delayMs: number = 5000) {
     const playerToMove = this.lineUp[this.turn % 2]
     const otherPlayer = this.lineUp[this.turn + 1 % 2]
 
@@ -33,12 +33,18 @@ export class Match {
       }
     }
 
-    console.log(`${playerToMove.enemy ? 'Enemy' : 'Player'} hand: ${playerToMove.hand}` )
+    console.log(`\nBEFORE TURN #${this.turn}\n${playerToMove.enemy ? 'Enemy' : 'Player'} hand: ${playerToMove.hand}` )
 
     // we have logic, at first pure random, for players playing their cards.
     // enemies will follow a particular pattern that has to be established by orchestrator
 
     await this.orchestrator.playTurn(playerToMove, otherPlayer, this.turn)
+
+    console.log(`\nAFTER TURN #${this.turn}:\n`)
+    console.log('player: ', String(this.player))
+    console.log('enemy:', String(this.enemy))
+
+    await this.tick(delayMs)
 
     // if we don't have a winner yet, advance turn
     this.winner = this.isGameOver()
@@ -82,6 +88,7 @@ class Orchestrator {
     }
   }
   applyCard(source: Player, target: Player, card: Card) {
+    console.log(`player ${source.name} playing card ${card}`)
     const { attack, defense } = card
     target.removeHp(attack)
     source.raiseBlock(defense)

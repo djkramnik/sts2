@@ -11,6 +11,7 @@ type PlayerState = {
 
 export class Player {
   readonly enemy: boolean
+  readonly name: string
   maxHp: number
   hp: number
   mana: number
@@ -21,8 +22,9 @@ export class Player {
   block: number
   base: PlayerState
 
-  constructor({ maxHp, hp, mana, deck, block }: PlayerState, enemy?: boolean) {
+  constructor({ maxHp, hp, mana, deck, block }: PlayerState, name: string, enemy?: boolean) {
     this.enemy = enemy === true
+    this.name = name
     this.maxHp = maxHp
     this.hp = hp
     this.mana = mana
@@ -90,6 +92,10 @@ export class Player {
     }
     this.discardPile = this.discardPile.concat(discarded)
     return true
+  }
+
+  toString() {
+    return `Player ${this.name}.  Hp: ${this.hp}.  MaxHp: ${this.maxHp}.  Mana: ${this.mana}`
   }
 
 }

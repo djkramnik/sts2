@@ -31,4 +31,8 @@ export class Card {
     this.attack = this.base.attack
     this.defense = this.base.defense
   }
+
+  toString() {
+    return `Card ${this.name}. Attack ${this.attack}.  Defend ${this.defense}`
+  }
 }
