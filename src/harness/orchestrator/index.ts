@@ -64,7 +64,7 @@ export class Match {
   }
 }
 
-class Orchestrator {
+export class Orchestrator {
   match: Match | null
   async runMatch(player: Player, enemy: Player): Promise<0 | 1> {
     this.match = new Match(player, enemy, this)

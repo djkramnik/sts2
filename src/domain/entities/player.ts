@@ -98,4 +98,8 @@ export class Player {
     return `Player ${this.name}.  Hp: ${this.hp}.  MaxHp: ${this.maxHp}.  Mana: ${this.mana}`
   }
 
+  afterMatch() {
+
+  }
+
 }
