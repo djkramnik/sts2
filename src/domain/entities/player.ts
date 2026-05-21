@@ -95,11 +95,17 @@ export class Player {
   }
 
   toString() {
-    return `Player ${this.name}.  Hp: ${this.hp}.  MaxHp: ${this.maxHp}.  Mana: ${this.mana}`
+    return `${this.enemy ? `Enemy` : `Player`} "${this.name}".  Hp: ${this.hp}.  MaxHp: ${this.maxHp}.  Mana: ${this.mana}`
   }
 
   afterMatch() {
-
+    this.mana = this.base.mana
+    this.deck = this.base.deck
+    this.block = this.base.block
+    this.hand = []
+    this.drawPile = shuffle(this.deck.slice(0))
+    this.discardPile = []
+    this.hp = Math.min(this.maxHp, this.hp + 6)
   }
 
 }
