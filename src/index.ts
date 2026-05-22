@@ -4,6 +4,10 @@ import { Simulation } from "./harness/sim";
 console.log('sts2 simulator')
 
 ;(async function main() {
+
+
+
+
   const hero = new Player({
     maxHp: 80,
     hp: 80,
@@ -12,8 +16,16 @@ console.log('sts2 simulator')
     block: 0,
   }, 'ironclad')
 
+  const enemy = new Player({
+    maxHp: 40,
+    hp: 40,
+    mana: 1,
+    deck: [],
+    block: 0
+  }, 'test-dummy', true)
 
-  // const sim = new Simulation()
+
+  const sim = new Simulation(hero, [enemy])
 
 
 })()
