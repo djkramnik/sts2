@@ -3,6 +3,10 @@
 import { Card } from "../../domain/entities/card";
 import { Player } from "../../domain/entities/player";
 
+
+// TODO: Match and orchestrator should just be one thing bro
+
+
 export class Match {
   winner: 0 | 1 | null // 0 = player wins, 1 = enemy wins, null = match not over
   player: Player
