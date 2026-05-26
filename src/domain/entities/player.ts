@@ -59,7 +59,7 @@ export class Player {
     this.hp = Math.max(0, this.hp - damage)
   }
   setBaseMana(turn: number) {
-    return this.base.mana
+    this.mana = this.base.mana
   }
   raiseMana(m: number) {
     this.mana += m
@@ -79,6 +79,9 @@ export class Player {
       return false
     }
     const card = this.drawPile.pop() // last item of array is 'top' of the deck
+    if (!card) {
+      return false
+    }
     this.hand.push(card)
     return true
   }
@@ -112,8 +115,8 @@ export class Player {
   afterTurn() {
     this.mana = this.base.mana
     this.block = this.base.block
-    for(let i = 0; i < this.hand.length; i += 1) {
-      if (!this.discardOne(i)) {
+    while (this.hand.length > 0) {
+      if (!this.discardOne(0)) {
         console.error('wtf, discard after turn?')
         break
       }

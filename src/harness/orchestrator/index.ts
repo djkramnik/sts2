@@ -27,7 +27,7 @@ export class Match {
   //
   async tick(delayMs: number = 5000) {
     const playerToMove = this.lineUp[this.turn % 2]
-    const otherPlayer = this.lineUp[this.turn + 1 % 2]
+    const otherPlayer = this.lineUp[(this.turn + 1) % 2]
 
     const drawTotal = playerToMove.enemy ? playerToMove.base.deck.length : 5
     // draw up to drawTotal.  enemy player always draws their full deck every turn
@@ -48,15 +48,13 @@ export class Match {
     console.log('player: ', String(this.player))
     console.log('enemy:', String(this.enemy))
 
-    playerToMove.afterTurn()
-
-    await this.tick(delayMs)
-
-    // if we don't have a winner yet, advance turn
     this.winner = this.isGameOver()
-    if (this.winner === null) {
-      this.turn += 1
+    if (this.winner !== null) {
+      return
     }
+
+    playerToMove.afterTurn()
+    this.turn += 1
   }
 
   isGameOver(): 0 | 1 | null {
@@ -71,11 +69,11 @@ export class Match {
 }
 
 export class Orchestrator {
-  match: Match | null
+  match: Match | null = null
   async runMatch(player: Player, enemy: Player): Promise<0 | 1> {
     this.match = new Match(player, enemy, this)
     while(this.match.winner === null) {
-      await this.match.tick()
+      await this.match.tick(0)
     }
     return this.match.winner
   }
@@ -98,5 +96,9 @@ export class Orchestrator {
     const { attack, defense } = card
     target.removeHp(attack)
     source.raiseBlock(defense)
+    const cardIndex = source.hand.indexOf(card)
+    if (cardIndex >= 0) {
+      source.discardOne(cardIndex)
+    }
   }
 }
