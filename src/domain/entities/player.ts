@@ -112,9 +112,12 @@ export class Player {
     this.hp = Math.min(this.maxHp, this.hp + 6)
   }
 
-  afterTurn() {
+  beforeTurn(turn: number) {
     this.mana = this.base.mana
     this.block = this.base.block
+  }
+
+  afterTurn(turn: number) {
     while (this.hand.length > 0) {
       if (!this.discardOne(0)) {
         console.error('wtf, discard after turn?')

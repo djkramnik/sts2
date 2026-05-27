@@ -31,6 +31,8 @@ export class Match {
     const otherPlayer = this.lineUp[(this.turn + 1) % 2]
 
     const drawTotal = playerToMove.enemy ? playerToMove.base.deck.length : 5
+
+    playerToMove.beforeTurn(this.turn)
     // draw up to drawTotal.  enemy player always draws their full deck every turn
     for(let i = 0; i < drawTotal; i += 1) {
       if (!playerToMove.drawOne()) {
@@ -54,7 +56,7 @@ export class Match {
       return
     }
 
-    playerToMove.afterTurn()
+    playerToMove.afterTurn(this.turn)
     this.turn += 1
   }
 
