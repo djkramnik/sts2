@@ -19,7 +19,7 @@ export class Simulation {
       const enemyName = enemy.name
       const playerName = this.player.name
 
-      console.log(`Commence match no. ${i + 1} between ${playerName} and ${enemy}`)
+      console.log(`Commence match no. ${i + 1} between ${playerName} and ${enemyName}`)
       console.log(`Player: ${this.player}`)
       console.group(`Enemy: ${enemy}`)
 

@@ -33,6 +33,6 @@ export class Card {
   }
 
   toString() {
-    return `Card ${this.name}. Attack ${this.attack}.  Defend ${this.defense}`
+    return `Card ${this.name}, Cost ${this.cost}. ${this.attack ? `ATK: ${this.attack}` : ''} ${this.defense ? `DEF: ${this.defense}` : ''}`
   }
 }

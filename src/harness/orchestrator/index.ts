@@ -2,6 +2,7 @@
 
 import { Card } from "../../domain/entities/card";
 import { Player } from "../../domain/entities/player";
+import { logCards } from "../../util/logging";
 
 
 // TODO: Match and orchestrator should just be one thing bro
@@ -37,7 +38,7 @@ export class Match {
       }
     }
 
-    console.log(`\nBEFORE TURN #${this.turn}\n${playerToMove.enemy ? 'Enemy' : 'Player'} hand: ${playerToMove.hand}` )
+    console.log(`\nBEFORE TURN #${this.turn}\n${playerToMove.enemy ? 'Enemy' : 'Player'} hand:\n${logCards(playerToMove.hand)}` )
 
     // we have logic, at first pure random, for players playing their cards.
     // enemies will follow a particular pattern that has to be established by orchestrator
@@ -88,11 +89,13 @@ export class Orchestrator {
         break
       }
       playerToMove.removeMana(firstCardCanPlay.cost)
+      console.log('mana left:', playerToMove.mana)
       this.applyCard(playerToMove, otherPlayer, firstCardCanPlay)
     }
   }
+  // block is not being factored in here
   applyCard(source: Player, target: Player, card: Card) {
-    console.log(`player ${source.name} playing card ${card}`)
+    console.log(`player ${source.name} playing ${card.name}`)
     const { attack, defense } = card
     target.removeHp(attack)
     source.raiseBlock(defense)
