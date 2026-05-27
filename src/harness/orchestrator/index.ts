@@ -99,7 +99,9 @@ export class Orchestrator {
   applyCard(source: Player, target: Player, card: Card) {
     console.log(`player ${source.name} playing ${card.name}`)
     const { attack, defense } = card
-    target.removeHp(attack)
+    const effectiveAttack = Math.max(0, attack - target.block)
+    target.removeHp(effectiveAttack)
+    target.removeBlock(attack)
     source.raiseBlock(defense)
     const cardIndex = source.hand.indexOf(card)
     if (cardIndex >= 0) {

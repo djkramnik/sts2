@@ -99,7 +99,7 @@ export class Player {
   }
 
   toString() {
-    return `${this.enemy ? `Enemy` : `Player`} "${this.name}".  Hp: ${this.hp}.  MaxHp: ${this.maxHp}.  Mana: ${this.mana}`
+    return `${this.enemy ? `Enemy` : `Player`} "${this.name}".  Hp: ${this.hp}.  MaxHp: ${this.maxHp}.  Mana: ${this.mana}. Block: ${this.block}`
   }
 
   afterMatch() {
