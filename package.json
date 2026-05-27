@@ -1,18 +1,12 @@
 {
   "name": "sts2",
-  "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "tsc",
-    "start": "npm run build && node dist/index.js",
-    "sim": "npm run build && node dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@types/node": "^25.9.1",
-    "typescript": "^6.0.3"
+    "build": "npm run build --workspace server",
+    "start": "npm run start --workspace server",
+    "sim": "npm run sim --workspace server"
   }
 }

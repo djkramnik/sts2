@@ -1,8 +1,7 @@
-import { Card } from "./domain/entities/card";
-import { Player } from "./domain/entities/player";
-import { Simulation } from "./harness/sim";
-
-console.log("sts2 simulator");
+import { Card } from "../domain/entities/card";
+import { Player } from "../domain/entities/player";
+import { Simulation } from "../harness/sim";
+import { Logger } from "../util/logger";
 
 const strike = () =>
   new Card(
@@ -43,7 +42,7 @@ const bash = () =>
     },
   );
 
-;(async function main() {
+export const createDemoSimulation = (logger: Logger) => {
   const heroDeck = [
     strike(),
     strike(),
@@ -55,11 +54,7 @@ const bash = () =>
     bash(),
   ];
 
-  const enemyDeck = [
-    strike(),
-    strike(),
-    defend(),
-  ];
+  const enemyDeck = [strike(), strike(), defend()];
 
   const hero = new Player(
     {
@@ -70,6 +65,8 @@ const bash = () =>
       block: 0,
     },
     "ironclad",
+    false,
+    logger,
   );
 
   const enemy = new Player(
@@ -82,8 +79,8 @@ const bash = () =>
     },
     "test-dummy",
     true,
+    logger,
   );
 
-  const sim = new Simulation(hero, [enemy]);
-  await sim.runSim();
-})();
+  return new Simulation(hero, [enemy], logger);
+};
