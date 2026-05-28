@@ -3,8 +3,21 @@ import {
   Box,
   Container,
 } from '@mui/material'
-
+import { Card } from 'shared'
+import { CardElem } from '../components/card'
 const HomePage: NextPage = () => {
+  const sample = new Card(
+    {
+      name: "Strike",
+      flavor: "A straightforward attack.",
+    },
+    {
+      cost: 1,
+      attack: 6,
+      defense: 0,
+    },
+  )
+  console.log(sample.serialize())
   return (
     <Box
       sx={{
@@ -24,7 +37,7 @@ const HomePage: NextPage = () => {
           py: 3,
         }}
       >
-       hi
+       <CardElem {...sample} />
       </Container>
     </Box>
   )
