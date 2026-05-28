@@ -1,5 +1,4 @@
-import { Card } from "../domain/entities/card";
-import { Player } from "../domain/entities/player";
+import { Card, Player } from "shared";
 import { Simulation } from "../harness/sim";
 import { Logger } from "../util/logger";
 

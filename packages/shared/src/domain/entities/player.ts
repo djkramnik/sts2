@@ -1,5 +1,5 @@
-import { shuffle } from "../../util";
-import { consoleLogger, Logger } from "../../util/logger";
+import { consoleLogger, Logger } from "../../logger";
+import { shuffle } from "../../util/shuffle";
 import { Card } from "./card";
 
 type PlayerState = {

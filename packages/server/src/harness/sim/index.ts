@@ -1,4 +1,4 @@
-import { Player } from "../../domain/entities/player";
+import { Player } from "shared";
 import { Match, Orchestrator } from "../orchestrator";
 import { consoleLogger, Logger } from "../../util/logger";
 

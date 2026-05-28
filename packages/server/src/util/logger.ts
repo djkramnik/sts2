@@ -1,39 +1,16 @@
-import { inspect } from "node:util";
+import { consoleLogger as sharedConsoleLogger, stringifyLogLine } from "shared";
 
-export interface Logger {
-  log: (...args: unknown[]) => void;
-  error: (...args: unknown[]) => void;
-}
+export type { Logger } from "shared";
+export const consoleLogger = sharedConsoleLogger;
 
-const formatArgument = (value: unknown) => {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  return inspect(value, {
-    depth: null,
-    colors: false,
-  });
-};
-
-const formatLine = (...args: unknown[]) => args.map(formatArgument).join(" ");
-
-export const consoleLogger: Logger = {
-  log: (...args) => {
-    console.log(...args);
-  },
-  error: (...args) => {
-    console.error(...args);
-  },
-};
-
-export const createLineLogger = (writeLine: (line: string) => void): Logger => {
+// Preserve the server-side line logger while sharing the core logger contract.
+export const createLineLogger = (writeLine: (line: string) => void) => {
   return {
-    log: (...args) => {
-      writeLine(formatLine(...args));
+    log: (...args: unknown[]) => {
+      writeLine(stringifyLogLine(...args));
     },
-    error: (...args) => {
-      writeLine(formatLine(...args));
+    error: (...args: unknown[]) => {
+      writeLine(stringifyLogLine(...args));
     },
   };
 };
