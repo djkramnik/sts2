@@ -1,6 +1,8 @@
 import type { CardMeta, CardState, SerializableCard } from "../../card";
+import crypto from 'crypto'
 
 export class Card {
+  id: string;
   name: string;
   flavor: string;
   cost: number;
@@ -9,6 +11,7 @@ export class Card {
   base: CardState;
 
   constructor(meta: CardMeta, state: CardState) {
+    this.id = crypto.randomUUID()
     this.flavor = meta.flavor;
     this.name = meta.name;
     this.cost = state.cost;
@@ -25,6 +28,7 @@ export class Card {
 
   serialize(): SerializableCard {
     return {
+      id: this.id,
       name: this.name,
       flavor: this.flavor,
       cost: this.cost,

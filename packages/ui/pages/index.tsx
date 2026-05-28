@@ -4,20 +4,37 @@ import {
   Container,
 } from '@mui/material'
 import { Card } from 'shared'
-import { CardElem } from '../components/card'
+import { CardElem, Deck } from '../components/card'
+
+const sample = new Card(
+  {
+    name: "Strike",
+    flavor: "A straightforward attack.",
+  },
+  {
+    cost: 1,
+    attack: 6,
+    defense: 0,
+  },
+)
+const sample2 = new Card(
+  {
+    name: "Defend",
+    flavor: "Basic protection.",
+  },
+  {
+    cost: 1,
+    attack: 0,
+    defense: 5,
+  },
+)
+
+const deckOCards = [
+  sample.serialize(),
+  sample2.serialize()
+]
+
 const HomePage: NextPage = () => {
-  const sample = new Card(
-    {
-      name: "Strike",
-      flavor: "A straightforward attack.",
-    },
-    {
-      cost: 1,
-      attack: 6,
-      defense: 0,
-    },
-  )
-  console.log(sample.serialize())
   return (
     <Box
       sx={{
@@ -37,7 +54,7 @@ const HomePage: NextPage = () => {
           py: 3,
         }}
       >
-       <CardElem {...sample} />
+       <Deck cards={deckOCards} />
       </Container>
     </Box>
   )

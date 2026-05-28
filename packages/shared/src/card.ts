@@ -16,6 +16,7 @@ export const CardMetaZ = z.object({
 export type CardMeta = z.infer<typeof CardMetaZ>;
 
 export const SerializableCardZ = z.object({
+  id: z.string(),
   name: z.string(),
   flavor: z.string(),
   cost: z.number(),
