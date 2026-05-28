@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace server",
-    "start": "npm run start --workspace server",
-    "sim": "npm run sim --workspace server"
+    "build": "npm run build --workspace sim_server",
+    "start": "npm run start --workspace sim_server",
+    "sim": "npm run sim --workspace sim_server"
   }
 }
