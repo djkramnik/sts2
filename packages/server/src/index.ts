@@ -1,9 +1,11 @@
 import { createApp } from "./app";
+import http from 'http'
 
-const port = Number(process.env.PORT ?? 3000);
+const port = Number(process.env.PORT ?? 3001);
 const app = createApp();
 
-app.listen(port, () => {
-  console.log(`server listening on http://localhost:${port}`);
-  console.log(`stream the demo sim at http://localhost:${port}/sim/stream`);
-});
+const server = http.createServer(app)
+
+server.listen(port, () => {
+  console.log(`Server listening on ${port}`)
+})
