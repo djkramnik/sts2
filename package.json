@@ -5,7 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:api": "npm run start --workspace sim_server",
-    "dev:ui": "npm run dev --workspace sim_ui"
+    "build:shared": "npm run -w shared build && npm install",
+    "dev:api": "npm run start -w sim_server",
+    "dev:ui": "npm run dev -w sim_ui"
   }
 }

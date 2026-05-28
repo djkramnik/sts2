@@ -1,4 +1,5 @@
 import { consoleLogger, Logger } from "../../logger";
+import type { SerializablePlayer } from "../../player";
 import { shuffle } from "../../util/shuffle";
 import { Card } from "./card";
 
@@ -108,6 +109,28 @@ export class Player {
 
     this.discardPile = this.discardPile.concat(discarded);
     return true;
+  }
+
+  serialize(): SerializablePlayer {
+    return {
+      enemy: this.enemy,
+      name: this.name,
+      maxHp: this.maxHp,
+      hp: this.hp,
+      mana: this.mana,
+      deck: this.deck.map((card) => card.serialize()),
+      drawPile: this.drawPile.map((card) => card.serialize()),
+      discardPile: this.discardPile.map((card) => card.serialize()),
+      hand: this.hand.map((card) => card.serialize()),
+      block: this.block,
+      base: {
+        maxHp: this.base.maxHp,
+        hp: this.base.hp,
+        mana: this.base.mana,
+        deck: this.base.deck.map((card) => card.serialize()),
+        block: this.base.block,
+      },
+    };
   }
 
   toString() {

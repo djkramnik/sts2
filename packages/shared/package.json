@@ -8,10 +8,21 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./card": {
+      "types": "./dist/card.d.ts",
+      "default": "./dist/card.js"
+    },
+    "./player": {
+      "types": "./dist/player.d.ts",
+      "default": "./dist/player.js"
     }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",

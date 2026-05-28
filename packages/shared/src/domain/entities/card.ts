@@ -1,13 +1,4 @@
-type CardState = {
-  cost: number;
-  attack: number;
-  defense: number;
-};
-
-type CardMeta = {
-  name: string;
-  flavor: string;
-};
+import type { CardMeta, CardState, SerializableCard } from "../../card";
 
 export class Card {
   name: string;
@@ -30,6 +21,17 @@ export class Card {
     this.cost = this.base.cost;
     this.attack = this.base.attack;
     this.defense = this.base.defense;
+  }
+
+  serialize(): SerializableCard {
+    return {
+      name: this.name,
+      flavor: this.flavor,
+      cost: this.cost,
+      attack: this.attack,
+      defense: this.defense,
+      base: { ...this.base },
+    };
   }
 
   toString() {
