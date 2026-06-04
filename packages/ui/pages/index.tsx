@@ -52,14 +52,14 @@ const HomePage: NextPage = () => {
 
     if (!simStream) {
       simStream = consumeSimStream('/api/sim/stream', {
-        onLog: ({ message }) => {
-          console.log(message)
+        onLog: (logPayload) => {
+          console.log(logPayload.message)
         },
-        onDone: ({ message }) => {
-          console.log(message)
+        onDone: (donePayload) => {
+          console.log(donePayload.message)
         },
-        onError: ({ message }) => {
-          console.error(message)
+        onError: (errorPayload) => {
+          console.error(errorPayload.message)
         },
         onConnectionError: (event) => {
           console.error('Simulation stream connection error', event)
