@@ -1,8 +1,12 @@
-import { createApp } from "./app";
+import express from 'express'
 import http from 'http'
+import simRouter from './routes/sim';
 
 const port = Number(process.env.PORT ?? 3067);
-const app = createApp();
+const app = express();
+
+app.use('/api/sim', simRouter)
+
 
 const server = http.createServer(app)
 
