@@ -1,98 +1,111 @@
-import {
-  StreamMessageZ,
-  type StreamDataMessage,
-  type StreamEventMessage,
-  type StreamMessage,
-} from "shared";
+import { z } from "zod";
 
-export type StreamMessageHandlers = {
-  onStreamMessage?: (message: StreamMessage) => void;
-  onMessage?: (message: StreamDataMessage["message"]) => void;
-  onEvent?: (event: StreamEventMessage["event"]) => void;
-  onInvalidMessage?: (error: unknown, line: string) => void;
+const SimStreamPayloadZ = z.object({
+  message: z.string(),
+}).strict();
+
+export type SimStreamPayload = z.infer<typeof SimStreamPayloadZ>;
+
+export type SimStreamEventType = "ready" | "log" | "done" | "error";
+
+export type SimStreamEvent = {
+  type: SimStreamEventType;
+  data: SimStreamPayload;
+};
+
+export type SimStreamHandlers = {
+  onEvent?: (event: SimStreamEvent) => void;
+  onReady?: (data: SimStreamPayload) => void;
+  onLog?: (data: SimStreamPayload) => void;
+  onDone?: (data: SimStreamPayload) => void;
+  onError?: (data: SimStreamPayload) => void;
+  onConnectionError?: (event: Event) => void;
+  onInvalidEvent?: (error: unknown, event: MessageEvent<string>) => void;
   signal?: AbortSignal;
 };
 
-export async function consumeJsonMessageStream(
-  input: RequestInfo | URL,
-  handlers: StreamMessageHandlers = {},
-  init: RequestInit = {},
-): Promise<void> {
-  const response = await fetch(input, {
-    ...init,
-    signal: handlers.signal ?? init.signal,
+export function consumeSimStream(
+  input: string | URL,
+  handlers: SimStreamHandlers = {},
+): EventSource {
+  const source = new EventSource(input.toString());
+  const close = () => source.close();
+
+  if (handlers.signal?.aborted) {
+    close();
+    return source;
+  }
+
+  handlers.signal?.addEventListener("abort", close, { once: true });
+
+  addSimStreamEventListener(source, "ready", handlers);
+  addSimStreamEventListener(source, "log", handlers);
+  addSimStreamEventListener(source, "done", handlers, close);
+
+  source.addEventListener("error", (event) => {
+    if (!isMessageEvent(event)) {
+      handlers.onConnectionError?.(event);
+      return;
+    }
+
+    handleSimStreamEvent("error", event, handlers);
+    close();
   });
 
-  if (!response.ok) {
-    throw new Error(`Stream request failed with status ${response.status}`);
-  }
-
-  if (!response.body) {
-    throw new Error("Stream response did not include a readable body.");
-  }
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        break;
-      }
-
-      buffer += decoder.decode(value, { stream: true });
-      buffer = consumeBufferedLines(buffer, handlers);
-    }
-
-    buffer += decoder.decode();
-    consumeBufferedLines(buffer, handlers, true);
-  } finally {
-    reader.releaseLock();
-  }
+  return source;
 }
 
-function consumeBufferedLines(
-  buffer: string,
-  handlers: StreamMessageHandlers,
-  flush = false,
+function addSimStreamEventListener(
+  source: EventSource,
+  type: Exclude<SimStreamEventType, "error">,
+  handlers: SimStreamHandlers,
+  afterEvent?: () => void,
 ) {
-  const lines = buffer.split(/\r?\n/);
-  const remainder = flush ? "" : lines.pop() ?? "";
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.length === 0) {
-      continue;
-    }
-
-    consumeLine(trimmed, handlers);
-  }
-
-  return remainder;
+  source.addEventListener(type, (event) => {
+    handleSimStreamEvent(type, event, handlers);
+    afterEvent?.();
+  });
 }
 
-function consumeLine(line: string, handlers: StreamMessageHandlers) {
-  let streamMessage: StreamMessage;
+function handleSimStreamEvent(
+  type: SimStreamEventType,
+  event: MessageEvent<string>,
+  handlers: SimStreamHandlers,
+) {
+  let data: SimStreamPayload;
 
   try {
-    streamMessage = StreamMessageZ.parse(JSON.parse(line));
+    data = SimStreamPayloadZ.parse(JSON.parse(event.data));
   } catch (error) {
-    if (handlers.onInvalidMessage) {
-      handlers.onInvalidMessage(error, line);
+    if (handlers.onInvalidEvent) {
+      handlers.onInvalidEvent(error, event);
       return;
     }
 
     throw error;
   }
 
-  handlers.onStreamMessage?.(streamMessage);
+  const simEvent: SimStreamEvent = { type, data };
+  handlers.onEvent?.(simEvent);
 
-  if ("message" in streamMessage) {
-    handlers.onMessage?.(streamMessage.message);
+  if (type === "ready") {
+    handlers.onReady?.(data);
     return;
   }
 
-  handlers.onEvent?.(streamMessage.event);
+  if (type === "log") {
+    handlers.onLog?.(data);
+    return;
+  }
+
+  if (type === "done") {
+    handlers.onDone?.(data);
+    return;
+  }
+
+  handlers.onError?.(data);
+}
+
+function isMessageEvent(event: Event): event is MessageEvent<string> {
+  return "data" in event && typeof (event as MessageEvent).data === "string";
 }

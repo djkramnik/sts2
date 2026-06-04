@@ -6,6 +6,10 @@ import {
 import { Card } from 'shared'
 import { CardElem, Deck } from '../components/card'
 import { useEffect } from 'react'
+import { consumeSimStream } from '../util/stream'
+
+let simStream: EventSource | null = null
+let simStreamCloseTimer: ReturnType<typeof setTimeout> | null = null
 
 const getRandomUUID = () => new Date().getTime().toString()
 
@@ -40,6 +44,40 @@ const deckOCards = [
 ]
 
 const HomePage: NextPage = () => {
+  useEffect(() => {
+    if (simStreamCloseTimer) {
+      clearTimeout(simStreamCloseTimer)
+      simStreamCloseTimer = null
+    }
+
+    if (!simStream) {
+      simStream = consumeSimStream('/api/sim/stream', {
+        onLog: ({ message }) => {
+          console.log(message)
+        },
+        onDone: ({ message }) => {
+          console.log(message)
+        },
+        onError: ({ message }) => {
+          console.error(message)
+        },
+        onConnectionError: (event) => {
+          console.error('Simulation stream connection error', event)
+        },
+        onInvalidEvent: (error) => {
+          console.error('Invalid simulation stream event', error)
+        },
+      })
+    }
+
+    return () => {
+      simStreamCloseTimer = setTimeout(() => {
+        simStream?.close()
+        simStream = null
+        simStreamCloseTimer = null
+      }, 0)
+    }
+  }, [])
 
   return (
     <Box
