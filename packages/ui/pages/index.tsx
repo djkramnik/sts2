@@ -5,6 +5,7 @@ import {
 } from '@mui/material'
 import { Card } from 'shared'
 import { CardElem, Deck } from '../components/card'
+import { useEffect } from 'react'
 
 const getRandomUUID = () => new Date().getTime().toString()
 
@@ -39,6 +40,7 @@ const deckOCards = [
 ]
 
 const HomePage: NextPage = () => {
+
   return (
     <Box
       sx={{

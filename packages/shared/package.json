@@ -16,6 +16,10 @@
     "./player": {
       "types": "./dist/player.d.ts",
       "default": "./dist/player.js"
+    },
+    "./stream": {
+      "types": "./dist/stream.d.ts",
+      "default": "./dist/stream.js"
     }
   },
   "scripts": {
