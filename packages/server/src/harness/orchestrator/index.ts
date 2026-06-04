@@ -19,6 +19,13 @@ export class Match {
     this.orchestrator = orchestrator;
   }
 
+    async runMatch(): Promise<0 | 1> {
+      while (this.winner === null) {
+        await this.tick();
+      }
+      return this.winner;
+    }
+
   async tick(delayMs: number = 0) {
     const playerToMove = this.lineUp[this.turn % 2];
     const otherPlayer = this.lineUp[(this.turn + 1) % 2];
@@ -35,7 +42,9 @@ export class Match {
       `\nBEFORE TURN #${this.turn}\n${playerToMove.enemy ? "Enemy" : "Player"} hand:\n${logCards(playerToMove.hand)}`,
     );
 
-    await this.orchestrator.playTurn(playerToMove, otherPlayer, this.turn);
+    for await (const card of this.orchestrator.playTurn(playerToMove, otherPlayer, this.turn)) {
+      this.applyCard(playerToMove, otherPlayer, card)
+    }
 
     this.orchestrator.logger.log(`\nAFTER TURN #${this.turn}:\n`);
     this.orchestrator.logger.log("player:", String(this.player));
@@ -56,6 +65,19 @@ export class Match {
     }
   }
 
+  applyCard(source: Player, target: Player, card: Card) {
+    this.orchestrator.logger.log(`player ${source.name} playing ${card.name}`);
+    const { attack, defense } = card;
+    const effectiveAttack = Math.max(0, attack - target.block);
+    target.removeHp(effectiveAttack);
+    target.removeBlock(attack);
+    source.raiseBlock(defense);
+    const cardIndex = source.hand.indexOf(card);
+    if (cardIndex >= 0) {
+      source.discardOne(cardIndex);
+    }
+  }
+
   isGameOver(): 0 | 1 | null {
     if (this.player.hp === 0) {
       return 1;
@@ -69,21 +91,12 @@ export class Match {
 
 export class Orchestrator {
   logger: Logger;
-  match: Match | null = null;
 
   constructor(logger: Logger = consoleLogger) {
     this.logger = logger;
   }
 
-  async runMatch(player: Player, enemy: Player): Promise<0 | 1> {
-    this.match = new Match(player, enemy, this);
-    while (this.match.winner === null) {
-      await this.match.tick();
-    }
-    return this.match.winner;
-  }
-
-  async playTurn(playerToMove: Player, otherPlayer: Player, turn: number) {
+  async *playTurn(playerToMove: Player, otherPlayer: Player, turn: number) {
     playerToMove.setBaseMana();
     while (playerToMove.mana && playerToMove.hand.length > 0) {
       const firstCardCanPlay = playerToMove.hand.find((card) => card.cost <= playerToMove.mana);
@@ -93,20 +106,8 @@ export class Orchestrator {
 
       playerToMove.removeMana(firstCardCanPlay.cost);
       this.logger.log("mana left:", playerToMove.mana);
-      this.applyCard(playerToMove, otherPlayer, firstCardCanPlay);
-    }
-  }
-
-  applyCard(source: Player, target: Player, card: Card) {
-    this.logger.log(`player ${source.name} playing ${card.name}`);
-    const { attack, defense } = card;
-    const effectiveAttack = Math.max(0, attack - target.block);
-    target.removeHp(effectiveAttack);
-    target.removeBlock(attack);
-    source.raiseBlock(defense);
-    const cardIndex = source.hand.indexOf(card);
-    if (cardIndex >= 0) {
-      source.discardOne(cardIndex);
+      // this.applyCard(playerToMove, otherPlayer, firstCardCanPlay);
+      yield firstCardCanPlay
     }
   }
 }
