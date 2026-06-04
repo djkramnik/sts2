@@ -8,12 +8,15 @@ export const StreamDataMessageZ = z.object({
 
 export type StreamDataMessage = z.infer<typeof StreamDataMessageZ>;
 
+const StreamEventZ = z.intersection(
+  z.object({
+    name: z.string(),
+  }),
+  StreamRecordZ,
+);
+
 export const StreamEventMessageZ = z.object({
-  event: z
-    .object({
-      name: z.string(),
-    })
-    .catchall(z.unknown()),
+  event: StreamEventZ,
 }).strict();
 
 export type StreamEventMessage = z.infer<typeof StreamEventMessageZ>;
