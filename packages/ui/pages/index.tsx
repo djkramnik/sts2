@@ -6,6 +6,8 @@ import {
 import { Card } from 'shared'
 import { CardElem, Deck } from '../components/card'
 
+const getRandomUUID = () => new Date().getTime().toString()
+
 const sample = new Card(
   {
     name: "Strike",
@@ -16,6 +18,7 @@ const sample = new Card(
     attack: 6,
     defense: 0,
   },
+  getRandomUUID
 )
 const sample2 = new Card(
   {
@@ -27,6 +30,7 @@ const sample2 = new Card(
     attack: 0,
     defense: 5,
   },
+  getRandomUUID
 )
 
 const deckOCards = [

@@ -1,5 +1,4 @@
 import type { CardMeta, CardState, SerializableCard } from "../../card";
-import crypto from 'node:crypto'
 
 export class Card {
   id: string;
@@ -10,8 +9,8 @@ export class Card {
   defense: number;
   base: CardState;
 
-  constructor(meta: CardMeta, state: CardState) {
-    this.id = crypto.randomUUID()
+  constructor(meta: CardMeta, state: CardState, getRandomUUID: () => string) {
+    this.id = getRandomUUID()
     this.flavor = meta.flavor;
     this.name = meta.name;
     this.cost = state.cost;
