@@ -1,5 +1,5 @@
 import type { CardMeta, CardState, SerializableCard } from "../../card";
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 
 export class Card {
   id: string;

@@ -1,6 +1,7 @@
 import { Player } from "shared";
-import { Match, Orchestrator } from "../orchestrator";
+import { Orchestrator } from "../orchestrator";
 import { consoleLogger, Logger } from "../../util/logger";
+import { Match } from "../match";
 
 export class Simulation {
   orchestrator: Orchestrator;
@@ -25,7 +26,8 @@ export class Simulation {
       this.logger.log(`Player: ${this.player}`);
       this.logger.log(`Enemy: ${enemy}`);
 
-      const result = await this.orchestrator.runMatch(this.player, enemy);
+      const match = new Match(this.player, enemy, this.orchestrator);
+      const result = await match.runMatch();
 
       this.logger.log(
         `Match ${i} between ${playerName} and ${enemyName} won by: ${result === 0 ? playerName : enemyName}`,
