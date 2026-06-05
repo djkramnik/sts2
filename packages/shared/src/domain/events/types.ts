@@ -84,8 +84,8 @@ export type CardMessage = {
   uuid: string
   name: string
   cost: number
-  attack: number
-  defense: number
+  attack?: number
+  defense?: number
 }
 ;({} as CardMessage satisfies z.infer<typeof CardMessageZ>)
 
