@@ -8,7 +8,8 @@ export enum EventMessageType {
   MATCH_BOUNDARY = 'MATCH_BOUNDARY',
   TURN_BOUNDARY = 'TURN_BOUNDARY',
   PLAYER_HAND = 'PLAYER_HAND',
-  PLAYER_MOVE = 'PLAYER_MOVE'
+  PLAYER_MOVE = 'PLAYER_MOVE',
+  PRINT_MESSAGE = 'PRINT_MESSAGE' // informational only.  purely for console.log
 }
 
 export type SimulationMessage =
@@ -17,6 +18,17 @@ export type SimulationMessage =
   | TurnBoundaryMessage
   | PlayerHandMessage
   | PlayerMoveMessage
+  | PrintMessage
+
+export const PrintMessageZ = z.object({
+  type: z.literal(EventMessageType.PRINT_MESSAGE),
+  message: z.string()
+})
+export type PrintMessage = {
+  type: EventMessageType.PRINT_MESSAGE,
+  message: string
+}
+;({} as PrintMessage satisfies z.infer<typeof PrintMessageZ>)
 
 // this should be in the same folder as the player entity..
 // but for now dumping all schemas to be conveyed over streaming endpoint in this file

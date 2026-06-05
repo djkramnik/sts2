@@ -4,7 +4,7 @@ import {
   Container,
 } from '@mui/material'
 import { Card } from 'shared'
-import { CardElem, Deck } from '../components/card'
+import { Deck } from '../components/card'
 import { useEffect } from 'react'
 import { consumeSimStream } from '../util/stream'
 

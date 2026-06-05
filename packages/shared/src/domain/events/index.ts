@@ -1,4 +1,4 @@
-import { EventMessageType, MatchBoundaryMessageZ, PlayerHandMessageZ, PlayerMoveMessageZ, PlayerStatusMessageZ, SimulationMessage, TurnBoundaryMessageZ } from "./types"
+import { EventMessageType, MatchBoundaryMessageZ, PlayerHandMessageZ, PlayerMoveMessageZ, PlayerStatusMessageZ, PrintMessageZ, SimulationMessage, TurnBoundaryMessageZ } from "./types"
 
 export const eventMessageParser = (message: string): SimulationMessage | null => {
   let obj: { type: EventMessageType } | null = null
@@ -27,6 +27,9 @@ export const eventMessageParser = (message: string): SimulationMessage | null =>
     case EventMessageType.TURN_BOUNDARY:
       const maybeTurnBoundary = TurnBoundaryMessageZ.safeParse(obj)
       return maybeTurnBoundary.data ?? null
+    case EventMessageType.PRINT_MESSAGE:
+      const maybePrintMessage = PrintMessageZ.safeParse(obj)
+      return maybePrintMessage.data ?? null
     default:
       console.warn('unrecognized event message type', obj.type)
       return null
