@@ -22,19 +22,10 @@ export class Simulation {
       const enemyName = enemy.name;
       const playerName = this.player.name;
 
-      this.logger.log(`Commence match no. ${i + 1} between ${playerName} and ${enemyName}`);
-      this.logger.log(`Player: ${this.player}`);
-      this.logger.log(`Enemy: ${enemy}`);
-
       const match = new Match(this.player, enemy, this.orchestrator);
       const result = await match.runMatch();
 
-      this.logger.log(
-        `Match ${i} between ${playerName} and ${enemyName} won by: ${result === 0 ? playerName : enemyName}`,
-      );
-
       if (result === 1) {
-        this.logger.log(`${playerName} has lost after ${i + 1} matches. goodbye`);
         break;
       }
 

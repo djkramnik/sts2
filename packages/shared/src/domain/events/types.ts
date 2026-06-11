@@ -60,7 +60,8 @@ export const MatchBoundaryMessageZ = z.object({
   idx: z.number(),
   playerName: z.string(),
   enemyName: z.string(),
-  kind: BoundaryKindZ
+  kind: BoundaryKindZ,
+  winnerName: z.string().optional(),
 })
 
 export type MatchBoundaryMessage = {
@@ -69,6 +70,7 @@ export type MatchBoundaryMessage = {
   playerName: string
   enemyName: string
   kind: BoundaryKind
+  winnerName?: string
 }
 
 ;({} as MatchBoundaryMessage satisfies z.infer<typeof MatchBoundaryMessageZ>)

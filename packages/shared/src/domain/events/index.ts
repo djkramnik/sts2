@@ -1,9 +1,20 @@
-import { EventMessageType, MatchBoundaryMessageZ, PlayerHandMessageZ, PlayerMoveMessageZ, PlayerStatusMessageZ, PrintMessageZ, SimulationMessage, TurnBoundaryMessageZ } from "./types"
+import {
+  EventMessageType,
+  MatchBoundaryMessageZ,
+  PlayerHandMessageZ,
+  PlayerMoveMessageZ,
+  PlayerStatusMessageZ,
+  PrintMessageZ,
+  SimulationMessage,
+  TurnBoundaryMessageZ,
+} from './types'
 
 export * from './factory'
 export * from './types'
 
-export const eventMessageParser = (message: string): SimulationMessage | null => {
+export const eventMessageParser = (
+  message: string,
+): SimulationMessage | null => {
   let obj: { type: EventMessageType } | null = null
   try {
     obj = JSON.parse(message)
@@ -14,7 +25,7 @@ export const eventMessageParser = (message: string): SimulationMessage | null =>
     console.warn('unparseable message event string', message)
     return null
   }
-  switch(obj.type) {
+  switch (obj.type) {
     case EventMessageType.MATCH_BOUNDARY:
       const maybeMatchBoundary = MatchBoundaryMessageZ.safeParse(obj)
       return maybeMatchBoundary.data ?? null
