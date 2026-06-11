@@ -7,3 +7,4 @@ export type { PlayerState, SerializablePlayer } from "./player";
 export { consoleLogger } from "./logger";
 export { stringifyLogLine } from "./logger";
 export type { Logger } from "./logger";
+export * from './domain/events'

@@ -2,6 +2,7 @@
 import { Request, Response, Router } from "express";
 import { createDemoSimulation } from "../sim/createDemoSimulation";
 import { createLineLogger } from "../util/logger";
+import { createPrintMessage } from "shared";
 
 const simRouter = Router()
 export default simRouter
@@ -27,7 +28,7 @@ simRouter.get('/stream', async (request: Request, response: Response) => {
   writeSseEvent(response, "ready", { message: "Simulation stream opened." });
 
   try {
-    logger.log("sts2 simulator");
+    logger.log(createPrintMessage('sts2 simulator'));
     const simulation = createDemoSimulation(logger);
     await simulation.runSim();
 

@@ -1,5 +1,8 @@
 import { EventMessageType, MatchBoundaryMessageZ, PlayerHandMessageZ, PlayerMoveMessageZ, PlayerStatusMessageZ, PrintMessageZ, SimulationMessage, TurnBoundaryMessageZ } from "./types"
 
+export * from './factory'
+export * from './types'
+
 export const eventMessageParser = (message: string): SimulationMessage | null => {
   let obj: { type: EventMessageType } | null = null
   try {
