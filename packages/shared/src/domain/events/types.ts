@@ -38,7 +38,8 @@ export const PlayerStatusMessageZ = z.object({
   hp: z.number(),
   maxHp: z.number(),
   mana: z.number(),
-  block: z.number()
+  block: z.number(),
+  enemy: z.boolean()
 })
 
 export type PlayerStatusMessage = {
@@ -48,6 +49,7 @@ export type PlayerStatusMessage = {
   maxHp: number
   mana: number
   block: number
+  enemy: boolean
 }
 ;({}) as PlayerStatusMessage satisfies z.infer<typeof PlayerStatusMessageZ>
 

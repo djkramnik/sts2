@@ -18,8 +18,6 @@ export class Orchestrator {
       }
 
       playerToMove.removeMana(firstCardCanPlay.cost);
-      this.logger.log("mana left:", playerToMove.mana);
-      // this.applyCard(playerToMove, otherPlayer, firstCardCanPlay);
       yield firstCardCanPlay
     }
   }

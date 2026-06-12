@@ -1,4 +1,4 @@
-import { EventMessageType, MatchBoundaryMessage, PlayerStatusMessage, PrintMessage, TurnBoundaryMessage } from "./types"
+import { EventMessageType, MatchBoundaryMessage, PlayerHandMessage, PlayerMoveMessage, PlayerStatusMessage, PrintMessage, TurnBoundaryMessage } from "./types"
 
 export const createPrintMessage = (message: string): string => {
   const printMessage: PrintMessage = {
@@ -16,3 +16,9 @@ export const createTurnBoundaryMessage
 
 export const createPlayerStatusMessage
   = (p: PlayerStatusMessage): string => JSON.stringify(p)
+
+export const createPlayerHandMessage
+  = (ph: PlayerHandMessage): string => JSON.stringify(ph)
+
+export const createPlayerMoveMessage
+  = (pm: PlayerMoveMessage): string => JSON.stringify(pm)

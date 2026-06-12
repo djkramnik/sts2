@@ -1,10 +1,10 @@
 import {
   Card,
   createMatchBoundaryMessage,
+  createPlayerHandMessage,
   createPlayerStatusMessage,
   createTurnBoundaryMessage,
   EventMessageType,
-  MatchBoundaryMessageZ,
   Player,
 } from 'shared'
 import { Orchestrator } from '../orchestrator'
@@ -76,6 +76,72 @@ export class Match {
       })
     )
 
+    // BEFORE TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
+
+    this.orchestrator.logger.log(
+      createPlayerHandMessage({
+        type: EventMessageType.PLAYER_HAND,
+        hand: playerToMove.hand.map(c => ({
+          uuid: c.id,
+          name: c.name,
+          cost: c.cost,
+          attack: c.attack,
+          defense: c.defense
+        })),
+        handType: 'hand'
+      })
+    )
+    this.orchestrator.logger.log(
+      createPlayerHandMessage({
+        type: EventMessageType.PLAYER_HAND,
+        hand: playerToMove.drawPile.map(c => ({
+          uuid: c.id,
+          name: c.name,
+          cost: c.cost,
+          attack: c.attack,
+          defense: c.defense
+        })),
+        handType: 'draw'
+      })
+    )
+    this.orchestrator.logger.log(
+      createPlayerHandMessage({
+        type: EventMessageType.PLAYER_HAND,
+        hand: playerToMove.discardPile.map(c => ({
+          uuid: c.id,
+          name: c.name,
+          cost: c.cost,
+          attack: c.attack,
+          defense: c.defense
+        })),
+        handType: 'discard'
+      })
+    )
+    // BEFORE TURN PLAYER STATUSES
+    this.orchestrator.logger.log(
+      createPlayerStatusMessage({
+        type: EventMessageType.PLAYER_STATUS,
+        name: this.player.name,
+        hp: this.player.hp,
+        maxHp: this.player.maxHp,
+        mana: this.player.mana,
+        block: this.player.block,
+        enemy: this.enemy.enemy,
+      })
+    )
+
+    this.orchestrator.logger.log(
+      createPlayerStatusMessage({
+        type: EventMessageType.PLAYER_STATUS,
+        name: this.enemy.name,
+        hp: this.enemy.hp,
+        maxHp: this.enemy.maxHp,
+        mana: this.enemy.mana,
+        block: this.enemy.block,
+        enemy: this.enemy.enemy,
+      })
+    )
+
     for await (const card of this.orchestrator.playTurn(
       playerToMove,
       otherPlayer,
@@ -93,6 +159,48 @@ export class Match {
       })
     )
 
+    // AFTER TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
+
+    this.orchestrator.logger.log(
+      createPlayerHandMessage({
+        type: EventMessageType.PLAYER_HAND,
+        hand: playerToMove.hand.map(c => ({
+          uuid: c.id,
+          name: c.name,
+          cost: c.cost,
+          attack: c.attack,
+          defense: c.defense
+        })),
+        handType: 'hand'
+      })
+    )
+    this.orchestrator.logger.log(
+      createPlayerHandMessage({
+        type: EventMessageType.PLAYER_HAND,
+        hand: playerToMove.drawPile.map(c => ({
+          uuid: c.id,
+          name: c.name,
+          cost: c.cost,
+          attack: c.attack,
+          defense: c.defense
+        })),
+        handType: 'draw'
+      })
+    )
+    this.orchestrator.logger.log(
+      createPlayerHandMessage({
+        type: EventMessageType.PLAYER_HAND,
+        hand: playerToMove.discardPile.map(c => ({
+          uuid: c.id,
+          name: c.name,
+          cost: c.cost,
+          attack: c.attack,
+          defense: c.defense
+        })),
+        handType: 'discard'
+      })
+    )
+    // AFTER TURN PLAYER STATUSES
     this.orchestrator.logger.log(
       createPlayerStatusMessage({
         type: EventMessageType.PLAYER_STATUS,
@@ -100,7 +208,8 @@ export class Match {
         hp: this.player.hp,
         maxHp: this.player.maxHp,
         mana: this.player.mana,
-        block: this.player.block
+        block: this.player.block,
+        enemy: this.enemy.enemy,
       })
     )
 
@@ -111,7 +220,8 @@ export class Match {
         hp: this.enemy.hp,
         maxHp: this.enemy.maxHp,
         mana: this.enemy.mana,
-        block: this.enemy.block
+        block: this.enemy.block,
+        enemy: this.enemy.enemy,
       })
     )
 
@@ -131,7 +241,6 @@ export class Match {
   }
 
   applyCard(source: Player, target: Player, card: Card) {
-    this.orchestrator.logger.log(`player ${source.name} playing ${card.name}`)
     const { attack, defense } = card
     const effectiveAttack = Math.max(0, attack - target.block)
     target.removeHp(effectiveAttack)
