@@ -33,7 +33,8 @@ simRouter.get('/stream', async (request: Request, response: Response) => {
     await simulation.runSim();
 
     if (!streamClosed) {
-      writeSseEvent(response, "done", { message: "Simulation finished." });
+      logger.log(createPrintMessage('sim finished'))
+      writeSseEvent(response, "done", { message: "" });
       response.end();
     }
   } catch (error) {
