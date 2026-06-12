@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "build:shared": "npm run -w shared build && npm install",
-    "dev:api": "npm run start -w sim_server",
+    "dev:api": "npm run dev -w sim_server",
     "dev:ui": "npm run dev -w sim_ui",
     "format": "prettier --write"
   },
