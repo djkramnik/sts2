@@ -1,17 +1,14 @@
 import { Player } from "shared";
 import { Orchestrator } from "../orchestrator";
-import { consoleLogger, Logger } from "../../util/logger";
 import { Match } from "../match";
 
 export class Simulation {
   orchestrator: Orchestrator;
   enemies: Player[];
   player: Player;
-  logger: Logger;
 
-  constructor(player: Player, enemies: Player[], logger: Logger = consoleLogger) {
-    this.logger = logger;
-    this.orchestrator = new Orchestrator(logger);
+  constructor(player: Player, enemies: Player[]) {
+    this.orchestrator = new Orchestrator();
     this.player = player;
     this.enemies = enemies;
   }

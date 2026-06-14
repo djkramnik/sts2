@@ -35,7 +35,7 @@ simRouter.get('/stream', async (request: Request, response: Response) => {
       message: 'sts2 simulator',
     })
 
-    const simulation = createDemoSimulation(logger)
+    const simulation = createDemoSimulation()
     await simulation.runSim()
 
     if (!streamClosed) {

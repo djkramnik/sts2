@@ -1,6 +1,5 @@
 import { Card, Player } from "shared";
 import { Simulation } from "../harness/sim";
-import { Logger } from "../util/logger";
 import { randomUUID } from "node:crypto";
 
 const strike = () =>
@@ -45,7 +44,7 @@ const bash = () =>
     randomUUID,
   );
 
-export const createDemoSimulation = (logger: Logger) => {
+export const createDemoSimulation = () => {
   const heroDeck = [
     strike(),
     strike(),
@@ -69,7 +68,6 @@ export const createDemoSimulation = (logger: Logger) => {
     },
     "ironclad",
     false,
-    logger,
   );
 
   const enemy = new Player(
@@ -82,8 +80,7 @@ export const createDemoSimulation = (logger: Logger) => {
     },
     "test-dummy",
     true,
-    logger,
   );
 
-  return new Simulation(hero, [enemy], logger);
+  return new Simulation(hero, [enemy]);
 };
