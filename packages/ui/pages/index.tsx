@@ -11,6 +11,7 @@ import { Card, eventMessageParser, SimulationMessage } from 'shared'
 import { Deck } from '../components/card'
 import { useCallback, useEffect, useState } from 'react'
 import { consumeSimStream } from '../util/stream'
+import { SimMessage } from '../components/sim-message'
 
 let simStream: EventSource | null = null
 let simStreamCloseTimer: ReturnType<typeof setTimeout> | null = null
@@ -173,7 +174,7 @@ const HomePage: NextPage = () => {
         </Stack>
         {/* <Deck cards={deckOCards} /> */}
         <div>
-          {visibleSimMessages.map((m, index) => <p key={index}>{JSON.stringify(m)}</p>)}
+          {visibleSimMessages.map((m, index) => <SimMessage key={index} message={m} />)}
         </div>
       </Container>
     </Box>
