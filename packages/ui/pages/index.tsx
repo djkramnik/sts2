@@ -1,11 +1,12 @@
 import { NextPage } from 'next'
 import {
   Box,
+  Button,
   Container,
 } from '@mui/material'
-import { Card } from 'shared'
+import { Card, eventMessageParser, SimulationMessage } from 'shared'
 import { Deck } from '../components/card'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { consumeSimStream } from '../util/stream'
 
 let simStream: EventSource | null = null
@@ -44,6 +45,15 @@ const deckOCards = [
 ]
 
 const HomePage: NextPage = () => {
+  const [simMessages, setSimMessages] = useState<SimulationMessage[]>([])
+  const [simIndex, setSimIndex] = useState<number>(-1)
+
+  const handleIncrementState = useCallback(() => {
+    if (simIndex < simMessages.length - 1) {
+      setSimIndex(simIndex + 1)
+    }
+  }, [setSimIndex, simMessages, simIndex])
+
   useEffect(() => {
     if (simStreamCloseTimer) {
       clearTimeout(simStreamCloseTimer)
@@ -53,7 +63,12 @@ const HomePage: NextPage = () => {
     if (!simStream) {
       simStream = consumeSimStream('/api/sim/stream', {
         onLog: (logPayload) => {
-          console.log(logPayload.message)
+          const incomingMessage = eventMessageParser(logPayload.message)
+          if (incomingMessage === null) {
+            console.warn('UNPARSEABLE MESSAGE', logPayload)
+            return
+          }
+          setSimMessages(messages => messages.concat(incomingMessage))
         },
         onDone: (donePayload) => {
           console.log(donePayload.message)
@@ -77,7 +92,7 @@ const HomePage: NextPage = () => {
         simStreamCloseTimer = null
       }, 0)
     }
-  }, [])
+  }, [setSimMessages])
 
   return (
     <Box
@@ -98,7 +113,18 @@ const HomePage: NextPage = () => {
           py: 3,
         }}
       >
-       <Deck cards={deckOCards} />
+      <Button disabled={simIndex >= simMessages.length - 1}
+        onClick={handleIncrementState}>
+        Increment
+      </Button>
+       {/* <Deck cards={deckOCards} /> */}
+       <div>
+        {
+          simIndex >=0
+            ? simMessages.slice(0, simIndex + 1).map(m => <p>{JSON.stringify(m)}</p>)
+            : null
+        }
+       </div>
       </Container>
     </Box>
   )
