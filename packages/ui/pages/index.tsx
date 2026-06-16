@@ -3,6 +3,9 @@ import {
   Box,
   Button,
   Container,
+  FormControlLabel,
+  Stack,
+  Switch,
 } from '@mui/material'
 import { Card, eventMessageParser, SimulationMessage } from 'shared'
 import { Deck } from '../components/card'
@@ -47,12 +50,23 @@ const deckOCards = [
 const HomePage: NextPage = () => {
   const [simMessages, setSimMessages] = useState<SimulationMessage[]>([])
   const [simIndex, setSimIndex] = useState<number>(-1)
+  const [showAllSimMessages, setShowAllSimMessages] = useState<boolean>(false)
 
   const handleIncrementState = useCallback(() => {
     if (simIndex < simMessages.length - 1) {
       setSimIndex(simIndex + 1)
     }
   }, [setSimIndex, simMessages, simIndex])
+
+  const handleResetSimIndex = useCallback(() => {
+    setSimIndex(0)
+  }, [setSimIndex])
+
+  const visibleSimMessages = showAllSimMessages
+    ? simMessages
+    : simIndex >= 0
+      ? simMessages.slice(0, simIndex + 1)
+      : []
 
   useEffect(() => {
     if (simStreamCloseTimer) {
@@ -113,18 +127,54 @@ const HomePage: NextPage = () => {
           py: 3,
         }}
       >
-      <Button disabled={simIndex >= simMessages.length - 1}
-        onClick={handleIncrementState}>
-        Increment
-      </Button>
-       {/* <Deck cards={deckOCards} /> */}
-       <div>
-        {
-          simIndex >=0
-            ? simMessages.slice(0, simIndex + 1).map(m => <p>{JSON.stringify(m)}</p>)
-            : null
-        }
-       </div>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            rowGap: 1,
+          }}
+        >
+          <Button
+            variant="outlined"
+            disabled={simIndex >= simMessages.length - 1}
+            onClick={handleIncrementState}
+            sx={{
+              width: 'fit-content',
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              '&:hover': {
+                bgcolor: 'primary.dark',
+              },
+              '&.Mui-disabled': {
+                bgcolor: 'action.disabledBackground',
+              },
+            }}
+          >
+            Increment
+          </Button>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={showAllSimMessages}
+                onChange={(event) => setShowAllSimMessages(event.target.checked)}
+              />
+            }
+            label="Show all"
+          />
+          <Button
+            variant="outlined"
+            onClick={handleResetSimIndex}
+            sx={{ width: 'fit-content' }}
+          >
+            Reset
+          </Button>
+        </Stack>
+        {/* <Deck cards={deckOCards} /> */}
+        <div>
+          {visibleSimMessages.map((m, index) => <p key={index}>{JSON.stringify(m)}</p>)}
+        </div>
       </Container>
     </Box>
   )
