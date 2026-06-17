@@ -1,5 +1,7 @@
-import { Typography } from "@mui/material";
-import { SimulationMessage, PrintMessage, EventMessageType, MatchBoundaryMessage } from "shared";
+import { Box, Card, Typography } from "@mui/material";
+import { SimulationMessage, PrintMessage, EventMessageType, MatchBoundaryMessage, TurnBoundaryMessage, PlayerHandMessage, PlayerStatusMessage } from "shared";
+import { Capitalize } from "./capitalize";
+import { Deck } from "./card";
 
 export const SimMessage = ({ message }: { message: SimulationMessage}) => {
   switch (message.type) {
@@ -7,6 +9,12 @@ export const SimMessage = ({ message }: { message: SimulationMessage}) => {
       return <PrintMessageElem {...message} />
     case EventMessageType.MATCH_BOUNDARY:
       return <MatchBoundaryElem {...message} />
+    case EventMessageType.TURN_BOUNDARY:
+      return <TurnBoundaryElem { ...message } />
+    case EventMessageType.PLAYER_HAND:
+      return <PlayerHandElem { ...message } />
+    case EventMessageType.PLAYER_STATUS:
+      return <PlayerStatusElem { ...message} />
     default:
       return <p>{JSON.stringify(message)}</p>
   }
@@ -18,12 +26,36 @@ function PrintMessageElem({ message }: PrintMessage) {
   )
 }
 
-function MatchBoundaryElem({ kind}: MatchBoundaryMessage) {
+function MatchBoundaryElem({ kind }: MatchBoundaryMessage) {
   return (
     <Typography component="h2" fontWeight={600} fontSize="24px">
-      Match <span style={{ textTransform: 'capitalize' }}>
-        {kind}
-        </span>
+      Match <Capitalize>{kind}</Capitalize>
     </Typography>
+  )
+}
+
+function TurnBoundaryElem({ kind, idx }: TurnBoundaryMessage) {
+  return (
+    <Typography component="h2" fontWeight={600} fontSize="24px">
+      Turn #{idx + 1} <Capitalize>{kind}</Capitalize>
+    </Typography>
+  )
+}
+
+function PlayerHandElem({ handType, hand }: PlayerHandMessage) {
+  return (
+    <Card sx={{ padding: 2}}>
+      <Typography fontWeight={600}>Player To Move: <Capitalize>{handType}</Capitalize> Pile</Typography>
+      <Deck cards={hand} />
+    </Card>
+  )
+}
+
+function PlayerStatusElem(ps: PlayerStatusMessage) {
+  console.log(JSON.stringify(ps))
+  return (
+    <Card sx={{ padding: 2}}>
+      <img src={`/assets/${ps.enemy ? 'enemies' : 'player'}/${ps.name + '.webp'}`} />
+    </Card>
   )
 }

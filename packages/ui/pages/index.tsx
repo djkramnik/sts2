@@ -173,9 +173,9 @@ const HomePage: NextPage = () => {
           </Button>
         </Stack>
         {/* <Deck cards={deckOCards} /> */}
-        <div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {visibleSimMessages.map((m, index) => <SimMessage key={index} message={m} />)}
-        </div>
+        </Box>
       </Container>
     </Box>
   )

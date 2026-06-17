@@ -1,5 +1,9 @@
 ## Putzing Around
 
+* for now just render the simulation events as they are.. and then have to think about..
+probably sending more info in the simulation events. and then sprucing up UI one more time
+we will go with a DUMB client / UI.  so UI will not attempt to replicate game state on its end.  just dumbly render what the server is sending it
+
 ## todo
 stage: UI for testing/enjouyment
 

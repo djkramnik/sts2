@@ -66,8 +66,7 @@ export const createDemoSimulation = () => {
       deck: heroDeck,
       block: 0,
     },
-    "ironclad",
-    false,
+    "ironclad"
   );
 
   const enemy = new Player(

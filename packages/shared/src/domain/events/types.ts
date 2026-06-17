@@ -2,6 +2,7 @@
 // be parsed on the client, validated and then processed
 
 import z from "zod";
+import { SerializableCardZ, type SerializableCard } from "../../card";
 
 export enum EventMessageType {
   PLAYER_STATUS = 'PLAYER_STATUS',
@@ -89,42 +90,26 @@ export type TurnBoundaryMessage = {
 }
 ;({} as TurnBoundaryMessage satisfies z.infer<typeof TurnBoundaryMessageZ>)
 
-export const CardMessageZ = z.object({
-  uuid: z.string(),
-  name: z.string(),
-  cost: z.number(),
-  attack: z.number().optional(),
-  defense: z.number().optional(),
-})
-export type CardMessage = {
-  uuid: string
-  name: string
-  cost: number
-  attack?: number
-  defense?: number
-}
-;({} as CardMessage satisfies z.infer<typeof CardMessageZ>)
-
 export const PlayerHandMessageZ = z.object({
   type: z.literal(EventMessageType.PLAYER_HAND),
-  hand: z.array(CardMessageZ),
+  hand: z.array(SerializableCardZ),
   handType: z.union([z.literal('hand'), z.literal('draw'), z.literal('discard')])
 })
 
 export type PlayerHandMessage = {
   type: EventMessageType.PLAYER_HAND,
-  hand: CardMessage[]
+  hand: SerializableCard[]
   handType: | 'hand' | 'draw' | 'discard'
 }
 ;({} as PlayerHandMessage satisfies z.infer<typeof PlayerHandMessageZ>)
 
 export const PlayerMoveMessageZ = z.object({
   type: z.literal(EventMessageType.PLAYER_MOVE),
-  card: CardMessageZ
+  card: SerializableCardZ
 })
 
 export type PlayerMoveMessage = {
   type: EventMessageType.PLAYER_MOVE,
-  card: CardMessage
+  card: SerializableCard
 }
 ;({} as PlayerMoveMessage satisfies z.infer<typeof PlayerMoveMessageZ>)

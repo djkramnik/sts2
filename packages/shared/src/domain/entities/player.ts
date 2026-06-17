@@ -31,7 +31,7 @@ export class Player {
     enemy: boolean = false,
     logger: Logger = consoleLogger,
   ) {
-    this.enemy = enemy === true;
+    this.enemy = (enemy === true);
     this.name = name;
     this.logger = logger;
     this.maxHp = maxHp;

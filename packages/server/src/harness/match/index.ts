@@ -1,5 +1,17 @@
-import { Card, EventMessageType, Player, sendSimMessage } from 'shared'
+import { Card, EventMessageType, Player, sendSimMessage, type PlayerStatusMessage } from 'shared'
 import { Orchestrator } from '../orchestrator'
+
+const serializeCards = (cards: Card[]) => cards.map((card) => card.serialize())
+
+const playerStatusMessage = (player: Player): PlayerStatusMessage => ({
+  type: EventMessageType.PLAYER_STATUS,
+  name: player.name,
+  hp: player.hp,
+  maxHp: player.maxHp,
+  mana: player.mana,
+  block: player.block,
+  enemy: player.enemy,
+})
 
 export class Match {
   winner: 0 | 1 | null
@@ -63,59 +75,25 @@ export class Match {
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
-      hand: playerToMove.hand.map((c) => ({
-        uuid: c.id,
-        name: c.name,
-        cost: c.cost,
-        attack: c.attack,
-        defense: c.defense,
-      })),
+      hand: serializeCards(playerToMove.hand),
       handType: 'hand',
     })
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
-      hand: playerToMove.drawPile.map((c) => ({
-        uuid: c.id,
-        name: c.name,
-        cost: c.cost,
-        attack: c.attack,
-        defense: c.defense,
-      })),
+      hand: serializeCards(playerToMove.drawPile),
       handType: 'draw',
     })
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
-      hand: playerToMove.discardPile.map((c) => ({
-        uuid: c.id,
-        name: c.name,
-        cost: c.cost,
-        attack: c.attack,
-        defense: c.defense,
-      })),
+      hand: serializeCards(playerToMove.discardPile),
       handType: 'discard',
     })
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_STATUS,
-      name: this.player.name,
-      hp: this.player.hp,
-      maxHp: this.player.maxHp,
-      mana: this.player.mana,
-      block: this.player.block,
-      enemy: this.enemy.enemy,
-    })
+    sendSimMessage(playerStatusMessage(this.player))
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_STATUS,
-      name: this.enemy.name,
-      hp: this.enemy.hp,
-      maxHp: this.enemy.maxHp,
-      mana: this.enemy.mana,
-      block: this.enemy.block,
-      enemy: this.enemy.enemy,
-    })
+    sendSimMessage(playerStatusMessage(this.enemy))
 
     for await (const card of this.orchestrator.playTurn(
       playerToMove,
@@ -137,60 +115,26 @@ export class Match {
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
-      hand: playerToMove.hand.map((c) => ({
-        uuid: c.id,
-        name: c.name,
-        cost: c.cost,
-        attack: c.attack,
-        defense: c.defense,
-      })),
+      hand: serializeCards(playerToMove.hand),
       handType: 'hand',
     })
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
-      hand: playerToMove.drawPile.map((c) => ({
-        uuid: c.id,
-        name: c.name,
-        cost: c.cost,
-        attack: c.attack,
-        defense: c.defense,
-      })),
+      hand: serializeCards(playerToMove.drawPile),
       handType: 'draw',
     })
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
-      hand: playerToMove.discardPile.map((c) => ({
-        uuid: c.id,
-        name: c.name,
-        cost: c.cost,
-        attack: c.attack,
-        defense: c.defense,
-      })),
+      hand: serializeCards(playerToMove.discardPile),
       handType: 'discard',
     })
 
     // AFTER TURN PLAYER STATUSES
-    sendSimMessage({
-      type: EventMessageType.PLAYER_STATUS,
-      name: this.player.name,
-      hp: this.player.hp,
-      maxHp: this.player.maxHp,
-      mana: this.player.mana,
-      block: this.player.block,
-      enemy: this.enemy.enemy,
-    })
+    sendSimMessage(playerStatusMessage(this.player))
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_STATUS,
-      name: this.enemy.name,
-      hp: this.enemy.hp,
-      maxHp: this.enemy.maxHp,
-      mana: this.enemy.mana,
-      block: this.enemy.block,
-      enemy: this.enemy.enemy,
-    })
+    sendSimMessage(playerStatusMessage(this.enemy))
 
     this.winner = this.isGameOver()
     if (this.winner !== null) {
