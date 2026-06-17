@@ -84,17 +84,17 @@ export class Match {
       handType: 'hand',
     })
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_HAND,
-      hand: serializeCards(playerToMove.drawPile),
-      handType: 'draw',
-    })
+    // sendSimMessage({
+    //   type: EventMessageType.PLAYER_HAND,
+    //   hand: serializeCards(playerToMove.drawPile),
+    //   handType: 'draw',
+    // })
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_HAND,
-      hand: serializeCards(playerToMove.discardPile),
-      handType: 'discard',
-    })
+    // sendSimMessage({
+    //   type: EventMessageType.PLAYER_HAND,
+    //   hand: serializeCards(playerToMove.discardPile),
+    //   handType: 'discard',
+    // })
 
     sendSimMessage(playerStatusMessage(this.player))
 
@@ -121,17 +121,17 @@ export class Match {
       handType: 'hand',
     })
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_HAND,
-      hand: serializeCards(playerToMove.drawPile),
-      handType: 'draw',
-    })
+    // sendSimMessage({
+    //   type: EventMessageType.PLAYER_HAND,
+    //   hand: serializeCards(playerToMove.drawPile),
+    //   handType: 'draw',
+    // })
 
-    sendSimMessage({
-      type: EventMessageType.PLAYER_HAND,
-      hand: serializeCards(playerToMove.discardPile),
-      handType: 'discard',
-    })
+    // sendSimMessage({
+    //   type: EventMessageType.PLAYER_HAND,
+    //   hand: serializeCards(playerToMove.discardPile),
+    //   handType: 'discard',
+    // })
 
     // AFTER TURN PLAYER STATUSES
     sendSimMessage(playerStatusMessage(this.player))
@@ -161,6 +161,11 @@ export class Match {
   }
 
   applyCard(source: Player, target: Player, card: Card) {
+    const sourceCurrBlock = source.block
+    const targetCurrBlock = target.block
+    const targetCurrHp = target.hp
+
+
     const { attack, defense } = card
     const effectiveAttack = Math.max(0, attack - target.block)
     target.removeHp(effectiveAttack)
@@ -170,6 +175,11 @@ export class Match {
     if (cardIndex >= 0) {
       source.discardOne(cardIndex)
     }
+    const cardMessage = serializeCards([card])[0]
+    sendSimMessage({
+      type: EventMessageType.PLAYER_MOVE,
+      card: cardMessage
+    })
   }
 
   isGameOver(): 0 | 1 | null {

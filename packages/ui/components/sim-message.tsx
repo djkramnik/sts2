@@ -8,7 +8,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { SimulationMessage, PrintMessage, EventMessageType, MatchBoundaryMessage, TurnBoundaryMessage, PlayerHandMessage, PlayerStatusMessage } from "shared";
+import { SimulationMessage, PrintMessage, EventMessageType, MatchBoundaryMessage, TurnBoundaryMessage, PlayerHandMessage, PlayerStatusMessage, PlayerMoveMessage } from "shared";
 import { Capitalize } from "./capitalize";
 import { Deck } from "./card";
 
@@ -24,6 +24,8 @@ export const SimMessage = ({ message }: { message: SimulationMessage}) => {
       return <PlayerHandElem { ...message } />
     case EventMessageType.PLAYER_STATUS:
       return <PlayerStatusElem { ...message} />
+    case EventMessageType.PLAYER_MOVE:
+      return <PlayerMoveElem { ...message} />
     default:
       return <p>{JSON.stringify(message)}</p>
   }
@@ -98,6 +100,15 @@ function PlayerStatusElem(ps: PlayerStatusMessage) {
           </TableBody>
         </Table>
       </Box>
+    </Card>
+  )
+}
+
+function PlayerMoveElem({ card }: PlayerMoveMessage) {
+  return (
+    <Card sx={{ padding: 2 }}>
+      <Typography fontWeight={600}>Card Play: </Typography>
+      <Deck cards={[card]} />
     </Card>
   )
 }
