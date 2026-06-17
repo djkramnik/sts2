@@ -1,4 +1,13 @@
-import { Box, Card, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { SimulationMessage, PrintMessage, EventMessageType, MatchBoundaryMessage, TurnBoundaryMessage, PlayerHandMessage, PlayerStatusMessage } from "shared";
 import { Capitalize } from "./capitalize";
 import { Deck } from "./card";
@@ -52,10 +61,43 @@ function PlayerHandElem({ handType, hand }: PlayerHandMessage) {
 }
 
 function PlayerStatusElem(ps: PlayerStatusMessage) {
-  console.log(JSON.stringify(ps))
+  const playerStatusRows = [
+    { label: 'Type', value: ps.type },
+    { label: 'Name', value: ps.name },
+    { label: 'HP', value: ps.hp },
+    { label: 'Max HP', value: ps.maxHp },
+    { label: 'Mana', value: ps.mana },
+    { label: 'Block', value: ps.block },
+    { label: 'Enemy', value: ps.enemy ? 'true' : 'false' },
+  ]
+
   return (
     <Card sx={{ padding: 2}}>
-      <img src={`/assets/${ps.enemy ? 'enemies' : 'player'}/${ps.name + '.webp'}`} />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <img
+          alt={ps.name}
+          style={{ width: '30px' }}
+          src={`/assets/${ps.enemy ? 'enemies' : 'player'}/${ps.name + '.webp'}`}
+        />
+        <Table size="small" sx={{ width: 'fit-content' }}>
+          <TableHead>
+            <TableRow>
+              {playerStatusRows.map(({ label }) => (
+                <TableCell key={label} sx={{ fontWeight: 600 }}>
+                  {label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              {playerStatusRows.map(({ label, value }) => (
+                <TableCell key={label}>{value}</TableCell>
+              ))}
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Box>
     </Card>
   )
 }

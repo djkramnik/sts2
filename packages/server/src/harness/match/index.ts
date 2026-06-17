@@ -74,6 +74,11 @@ export class Match {
     // BEFORE TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
 
     sendSimMessage({
+      type: EventMessageType.PRINT_MESSAGE,
+      message: 'Everything before the moves played:'
+    })
+
+    sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
       hand: serializeCards(playerToMove.hand),
       handType: 'hand',
@@ -106,12 +111,9 @@ export class Match {
     // TURN END
 
     sendSimMessage({
-      type: EventMessageType.TURN_BOUNDARY,
-      idx: this.turn,
-      kind: 'end',
+      type: EventMessageType.PRINT_MESSAGE,
+      message: 'Everything after the moves played: '
     })
-
-    // AFTER TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
 
     sendSimMessage({
       type: EventMessageType.PLAYER_HAND,
@@ -135,6 +137,13 @@ export class Match {
     sendSimMessage(playerStatusMessage(this.player))
 
     sendSimMessage(playerStatusMessage(this.enemy))
+
+    // AFTER TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
+    sendSimMessage({
+      type: EventMessageType.TURN_BOUNDARY,
+      idx: this.turn,
+      kind: 'end',
+    })
 
     this.winner = this.isGameOver()
     if (this.winner !== null) {
