@@ -20,33 +20,30 @@ const getRandomUUID = () => new Date().getTime().toString()
 
 const sample = new Card(
   {
-    name: "Strike",
-    flavor: "A straightforward attack.",
+    name: 'Strike',
+    flavor: 'A straightforward attack.',
   },
   {
     cost: 1,
     attack: 6,
     defense: 0,
   },
-  getRandomUUID
+  getRandomUUID,
 )
 const sample2 = new Card(
   {
-    name: "Defend",
-    flavor: "Basic protection.",
+    name: 'Defend',
+    flavor: 'Basic protection.',
   },
   {
     cost: 1,
     attack: 0,
     defense: 5,
   },
-  getRandomUUID
+  getRandomUUID,
 )
 
-const deckOCards = [
-  sample.serialize(),
-  sample2.serialize()
-]
+const deckOCards = [sample.serialize(), sample2.serialize()]
 
 const HomePage: NextPage = () => {
   const [simMessages, setSimMessages] = useState<SimulationMessage[]>([])
@@ -83,7 +80,7 @@ const HomePage: NextPage = () => {
             console.warn('UNPARSEABLE MESSAGE', logPayload)
             return
           }
-          setSimMessages(messages => messages.concat(incomingMessage))
+          setSimMessages((messages) => messages.concat(incomingMessage))
         },
         onDone: (donePayload) => {
           console.log(donePayload.message)
@@ -118,25 +115,22 @@ const HomePage: NextPage = () => {
         bgcolor: 'grey.50',
       }}
     >
-      <Box height={8} />
-      <Container
-        maxWidth="md"
+      <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 3,
-          py: 3,
+          position: 'fixed',
+          backgroundColor: '#eee',
+          width: '100vw',
+          zIndex: 1
         }}
       >
-        <Stack
-          direction="row"
-          spacing={2}
-          sx={{
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            rowGap: 1,
-          }}
-        >
+        <Container maxWidth="md" sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 3,
+          padding: 2,
+          flexWrap: 'wrap',
+          width: '100%'
+        }}>
           <Button
             variant="outlined"
             disabled={simIndex >= simMessages.length - 1}
@@ -159,7 +153,9 @@ const HomePage: NextPage = () => {
             control={
               <Switch
                 checked={showAllSimMessages}
-                onChange={(event) => setShowAllSimMessages(event.target.checked)}
+                onChange={(event) =>
+                  setShowAllSimMessages(event.target.checked)
+                }
               />
             }
             label="Show all"
@@ -171,10 +167,23 @@ const HomePage: NextPage = () => {
           >
             Reset
           </Button>
-        </Stack>
+        </Container>
+      </Box>
+      <Box height={8} />
+      <Container
+        maxWidth="md"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+          py: 3,
+        }}
+      >
         {/* <Deck cards={deckOCards} /> */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {visibleSimMessages.map((m, index) => <SimMessage key={index} message={m} />)}
+          {visibleSimMessages.map((m, index) => (
+            <SimMessage key={index} message={m} />
+          ))}
         </Box>
       </Container>
     </Box>
