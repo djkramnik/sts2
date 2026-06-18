@@ -7,6 +7,7 @@ import {
   PrintMessageZ,
   SimulationMessage,
   TurnBoundaryMessageZ,
+  TurnSummaryMessageZ,
 } from './types'
 
 export * from './factory'
@@ -44,6 +45,9 @@ export const eventMessageParser = (
     case EventMessageType.PRINT_MESSAGE:
       const maybePrintMessage = PrintMessageZ.safeParse(obj)
       return maybePrintMessage.data ?? null
+    case EventMessageType.TURN_SUMMARY:
+      const maybeTurnSummary = TurnSummaryMessageZ.safeParse(obj)
+      return maybeTurnSummary.data ?? null
     default:
       console.warn('unrecognized event message type', obj.type)
       return null

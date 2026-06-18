@@ -1,4 +1,13 @@
-import { Card, EventMessageType, Player, sendSimMessage, type PlayerStatusMessage } from 'shared'
+import {
+  Card,
+  CardEffect,
+  EventMessageType,
+  Player,
+  sendSimMessage,
+  TurnSummaryMessage,
+  type PlayerStatusMessage,
+
+} from 'shared'
 import { Orchestrator } from '../orchestrator'
 
 const serializeCards = (cards: Card[]) => cards.map((card) => card.serialize())
@@ -64,86 +73,34 @@ export class Match {
       }
     }
 
-    // TURN START
-    sendSimMessage({
-      type: EventMessageType.TURN_BOUNDARY,
+    const playerCardEffects: Record<string, CardEffect> = {}
+    playerCardEffects[playerToMove.name] = {}
+    playerCardEffects[otherPlayer.name] = {}
+
+    const turnSummary: TurnSummaryMessage = {
+      type: EventMessageType.TURN_SUMMARY,
       idx: this.turn,
-      kind: 'start',
-    })
-
-    // BEFORE TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
-
-    sendSimMessage({
-      type: EventMessageType.PRINT_MESSAGE,
-      message: 'Everything before the moves played:'
-    })
-
-    sendSimMessage({
-      type: EventMessageType.PLAYER_HAND,
-      hand: serializeCards(playerToMove.hand),
-      handType: 'hand',
-    })
-
-    // sendSimMessage({
-    //   type: EventMessageType.PLAYER_HAND,
-    //   hand: serializeCards(playerToMove.drawPile),
-    //   handType: 'draw',
-    // })
-
-    // sendSimMessage({
-    //   type: EventMessageType.PLAYER_HAND,
-    //   hand: serializeCards(playerToMove.discardPile),
-    //   handType: 'discard',
-    // })
-
-    sendSimMessage(playerStatusMessage(this.player))
-
-    sendSimMessage(playerStatusMessage(this.enemy))
+      playerToMove: playerToMove.name,
+      playerToMoveHand: serializeCards(playerToMove.hand),
+      effects: playerCardEffects,
+      before: [playerStatusMessage(this.player), playerStatusMessage(this.enemy)],
+      after: [],
+      moves: []
+    }
 
     for await (const card of this.orchestrator.playTurn(
       playerToMove,
       otherPlayer,
       this.turn,
     )) {
-      this.applyCard(playerToMove, otherPlayer, card)
+      turnSummary.moves.push(serializeCards([card])[0])
+      this.applyCard(playerToMove, otherPlayer, card, playerCardEffects)
     }
-
-    // TURN END
-
-    sendSimMessage({
-      type: EventMessageType.PRINT_MESSAGE,
-      message: 'Everything after the moves played: '
-    })
-
-    sendSimMessage({
-      type: EventMessageType.PLAYER_HAND,
-      hand: serializeCards(playerToMove.hand),
-      handType: 'hand',
-    })
-
-    // sendSimMessage({
-    //   type: EventMessageType.PLAYER_HAND,
-    //   hand: serializeCards(playerToMove.drawPile),
-    //   handType: 'draw',
-    // })
-
-    // sendSimMessage({
-    //   type: EventMessageType.PLAYER_HAND,
-    //   hand: serializeCards(playerToMove.discardPile),
-    //   handType: 'discard',
-    // })
-
-    // AFTER TURN PLAYER STATUSES
-    sendSimMessage(playerStatusMessage(this.player))
-
-    sendSimMessage(playerStatusMessage(this.enemy))
-
-    // AFTER TURN: PLAYER TO MOVE: HAND, DRAW AND DISCARD
-    sendSimMessage({
-      type: EventMessageType.TURN_BOUNDARY,
-      idx: this.turn,
-      kind: 'end',
-    })
+    turnSummary.after = [
+      playerStatusMessage(this.player),
+      playerStatusMessage(this.enemy),
+    ]
+    sendSimMessage(turnSummary)
 
     this.winner = this.isGameOver()
     if (this.winner !== null) {
@@ -160,17 +117,20 @@ export class Match {
     }
   }
 
-  applyCard(source: Player, target: Player, card: Card) {
-    const sourceCurrBlock = source.block
-    const targetCurrBlock = target.block
-    const targetCurrHp = target.hp
-
-
+  applyCard(source: Player, target: Player, card: Card, effects: Record<string, CardEffect>) {
     const { attack, defense } = card
     const effectiveAttack = Math.max(0, attack - target.block)
     target.removeHp(effectiveAttack)
     target.removeBlock(attack)
     source.raiseBlock(defense)
+
+    // so.. we need to micromanage both the things happening simulation wise
+    // and also the deltas / effects so we can communicate it back to client
+    // this will scale poorly as variety of effects grow
+    effects[target.name].hp = effectiveAttack * -1
+    effects[target.name].block = effectiveAttack * - 1
+    effects[source.name].block = defense
+
     const cardIndex = source.hand.indexOf(card)
     if (cardIndex >= 0) {
       source.discardOne(cardIndex)

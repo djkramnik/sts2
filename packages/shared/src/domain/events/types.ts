@@ -116,18 +116,22 @@ export type PlayerMoveMessage = {
 }
 ;({} as PlayerMoveMessage satisfies z.infer<typeof PlayerMoveMessageZ>)
 
-
 // turn summary saga
 const CardEffectZ = z.object({
   block: z.number().optional(),
   hp: z.number().optional()
 })
-type CardEffect = Partial<Pick<PlayerStatusMessage, 'block' | 'hp'>>
+export type CardEffect = {
+  block?: number
+  hp?: number
+}
 
 export const TurnSummaryMessageZ = z.object({
   type: z.literal(EventMessageType.TURN_SUMMARY),
+  idx: z.number(),
   playerToMove: z.string(),
-  turn: z.array(SerializableCardZ),
+  playerToMoveHand: z.array(SerializableCardZ),
+  moves: z.array(SerializableCardZ),
   effects: z.record(z.string(), CardEffectZ), // key is player name
   before: z.array(PlayerStatusMessageZ),
   after: z.array(PlayerStatusMessageZ)
@@ -135,8 +139,10 @@ export const TurnSummaryMessageZ = z.object({
 
 export type TurnSummaryMessage = {
   type: EventMessageType.TURN_SUMMARY
+  idx: number
   playerToMove: string
-  turn: SerializableCard[]
+  playerToMoveHand: SerializableCard[]
+  moves: SerializableCard[]
   effects: Record<string, CardEffect>
   before: PlayerStatusMessage[]
   after: PlayerStatusMessage[]
