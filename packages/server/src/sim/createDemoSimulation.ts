@@ -57,7 +57,7 @@ const prowess = () => (
       flavor: 'When the student is ready the tutelage will arise'
     },
     {
-      cost: 1,
+      cost: 3,
       attack: 0,
       defense: 0,
       str: 1,
