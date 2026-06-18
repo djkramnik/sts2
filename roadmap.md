@@ -7,11 +7,16 @@
 
 * stat modifiers (str / dex)
 * stat modifiers that get removed at turn end
-* buffs / debuffs (vuln, weak, frail, vig)
+* buffs / debuffs (vuln, weak, frail)
+* vig is special buff?
 * draw modifiers
 * cards that do things at start or end of turn independent of their invocation
+* card upgrades
 * exhaust
+* cards that target other cards
 * card creation
+* X cards
+
 * powers
 * potions
 * relics

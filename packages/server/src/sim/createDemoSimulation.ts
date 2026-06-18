@@ -77,7 +77,7 @@ export const createDemoSimulation = () => {
       mana: 1,
       deck: enemyDeck,
       block: 0,
-      stats: { dex: 0, str: 0 }
+      stats: { dex: 2, str: 2 }
     },
     "test-dummy",
     true,

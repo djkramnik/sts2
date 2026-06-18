@@ -126,7 +126,10 @@ export class Match {
   }
 
   applyCard(source: Player, target: Player, card: Card, effects: Record<string, CardEffect>) {
-    const { attack, defense } = card
+    const { attack: baseAttack, defense: baseDefense } = card
+    const attack = baseAttack + source.stats.str
+    const defense = baseDefense + source.stats.dex
+
     const effectiveAttack = Math.max(0, attack - target.block)
     target.removeHp(effectiveAttack)
     target.removeBlock(attack)
