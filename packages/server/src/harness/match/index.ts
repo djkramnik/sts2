@@ -126,7 +126,11 @@ export class Match {
   }
 
   applyCard(source: Player, target: Player, card: Card, effects: Record<string, CardEffect>) {
-    const { attack: baseAttack, defense: baseDefense } = card
+    const { attack: baseAttack, defense: baseDefense, str, dex } = card
+
+    source.modifyStats('str', str)
+    source.modifyStats('dex', dex)
+
     const attack = baseAttack > 0
       ? baseAttack + source.stats.str
       : 0

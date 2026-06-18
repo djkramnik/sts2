@@ -4,6 +4,8 @@ export const CardStateZ = z.object({
   cost: z.number(),
   attack: z.number(),
   defense: z.number(),
+  str: z.number(),
+  dex: z.number()
 });
 
 export type CardState = z.infer<typeof CardStateZ>;
@@ -22,6 +24,8 @@ export const SerializableCardZ = z.object({
   cost: z.number(),
   attack: z.number(),
   defense: z.number(),
+  str: z.number(),
+  dex: z.number(),
   base: CardStateZ,
 });
 

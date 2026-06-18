@@ -12,6 +12,8 @@ const strike = () =>
       cost: 1,
       attack: 6,
       defense: 0,
+      str: 0,
+      dex: 0,
     },
     randomUUID,
   );
@@ -26,6 +28,8 @@ const defend = () =>
       cost: 1,
       attack: 0,
       defense: 5,
+      str: 0,
+      dex: 0,
     },
     randomUUID,
   );
@@ -40,9 +44,28 @@ const bash = () =>
       cost: 2,
       attack: 8,
       defense: 0,
+      str: 0,
+      dex: 0,
     },
     randomUUID,
   );
+
+const prowess = () => (
+  new Card(
+    {
+      name: 'Prowess',
+      flavor: 'When the student is ready the tutelage will arise'
+    },
+    {
+      cost: 1,
+      attack: 0,
+      defense: 0,
+      str: 1,
+      dex: 1,
+    },
+    randomUUID
+  )
+)
 
 export const createDemoSimulation = () => {
   const heroDeck = [
@@ -54,6 +77,7 @@ export const createDemoSimulation = () => {
     defend(),
     defend(),
     bash(),
+    prowess(),
   ];
 
   const enemyDeck = [strike(), strike(), defend(), defend(), defend()];

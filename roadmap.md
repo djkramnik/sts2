@@ -1,7 +1,10 @@
-## Putzing Around
+## Immediate todo
+* card(s) that effect dex and str
+* show dex and str in cards in UI
+* player status message with dex and str
+* show player dex and str in UI
 
-* finished improving the UI for showing a match
-* now need to... return to improving the simulation itself
+## Putzing Around
 
 * lengthy features list
 

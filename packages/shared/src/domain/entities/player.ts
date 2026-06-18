@@ -88,9 +88,7 @@ export class Player {
   }
 
   modifyStats(key: 'str' | 'dex', amt: number) {
-    if (!this.stats) {
-      this.stats = { dex: 0, str: 0 }
-    }
+    this.stats[key] += amt
   }
 
   drawOne(): boolean {

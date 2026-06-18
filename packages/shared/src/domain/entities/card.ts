@@ -7,6 +7,8 @@ export class Card {
   cost: number;
   attack: number;
   defense: number;
+  str: number;
+  dex: number;
   base: CardState;
 
   constructor(meta: CardMeta, state: CardState, getRandomUUID: () => string) {
@@ -17,6 +19,8 @@ export class Card {
     this.attack = state.attack;
     this.defense = state.defense;
     this.base = { ...state };
+    this.str = state.str
+    this.dex = state.dex
   }
 
   restoreBase() {
@@ -33,6 +37,8 @@ export class Card {
       cost: this.cost,
       attack: this.attack,
       defense: this.defense,
+      str: this.str,
+      dex: this.dex,
       base: { ...this.base },
     };
   }
