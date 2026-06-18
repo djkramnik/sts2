@@ -7,6 +7,10 @@ export const PlayerStateZ = z.object({
   mana: z.number(),
   deck: z.array(SerializableCardZ),
   block: z.number(),
+  stats: z.object({
+    dex: z.number(),
+    str: z.number()
+  })
 });
 
 export type PlayerState = z.infer<typeof PlayerStateZ>;
@@ -22,6 +26,7 @@ export const SerializablePlayerZ = z.object({
   discardPile: z.array(SerializableCardZ),
   hand: z.array(SerializableCardZ),
   block: z.number(),
+  stats: z.object({ dex: z.number(), str: z.number() }),
   base: PlayerStateZ,
 });
 

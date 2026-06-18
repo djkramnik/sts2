@@ -3,12 +3,15 @@ import type { SerializablePlayer } from "../../player";
 import { shuffle } from "../../util/shuffle";
 import { Card } from "./card";
 
+type StatModifier = { dex: number, str: number }
+
 type PlayerState = {
   maxHp: number;
   hp: number;
   mana: number;
   deck: Card[];
   block: number;
+  stats: StatModifier
 };
 
 export class Player {
@@ -24,9 +27,10 @@ export class Player {
   hand: Card[];
   block: number;
   base: PlayerState;
+  stats: StatModifier
 
   constructor(
-    { maxHp, hp, mana, deck, block }: PlayerState,
+    { maxHp, hp, mana, deck, block, stats }: PlayerState,
     name: string,
     enemy: boolean = false,
     logger: Logger = consoleLogger,
@@ -42,7 +46,8 @@ export class Player {
     this.hand = [];
     this.drawPile = shuffle(this.deck.slice(0));
     this.discardPile = [];
-    this.base = { maxHp, hp, mana, deck: deck.slice(0), block };
+    this.stats = stats
+    this.base = { maxHp, hp, mana, deck: deck.slice(0), block, stats };
   }
 
   restoreBase() {
@@ -51,6 +56,7 @@ export class Player {
     this.mana = this.base.mana;
     this.deck = this.base.deck;
     this.block = this.base.block;
+    this.stats = this.base.stats
   }
 
   raiseBlock(block: number) {
@@ -79,6 +85,12 @@ export class Player {
 
   removeMana(mana: number) {
     this.mana = Math.max(0, this.mana - mana);
+  }
+
+  modifyStats(key: 'str' | 'dex', amt: number) {
+    if (!this.stats) {
+      this.stats = { dex: 0, str: 0 }
+    }
   }
 
   drawOne(): boolean {
@@ -123,12 +135,10 @@ export class Player {
       discardPile: this.discardPile.map((card) => card.serialize()),
       hand: this.hand.map((card) => card.serialize()),
       block: this.block,
+      stats: this.stats,
       base: {
-        maxHp: this.base.maxHp,
-        hp: this.base.hp,
-        mana: this.base.mana,
+        ...this.base,
         deck: this.base.deck.map((card) => card.serialize()),
-        block: this.base.block,
       },
     };
   }

@@ -1,22 +1,25 @@
 ## Putzing Around
 
-* ~for now just render the simulation events as they are.. and then have to think about..
-probably sending more info in the simulation events. and then sprucing up UI one more time
-we will go with a DUMB client / UI.  so UI will not attempt to replicate game state on its end.  just dumbly render what the server is sending it~
-* per turn
+* finished improving the UI for showing a match
+* now need to... return to improving the simulation itself
 
-brainstorming the UI for a turn
-a two column headerless table:
+* lengthy features list
 
-moved: icon
-player status
-enemy status
-hand: player to move's hand
-turn x: card. effects on each player
-player status
-enemy status
+* stat modifiers (str / dex)
+* stat modifiers that get removed at turn end
+* buffs / debuffs (vuln, weak, frail, vig)
+* draw modifiers
+* cards that do things at start or end of turn independent of their invocation
+* exhaust
+* card creation
+* powers
+* potions
+* relics
 
-* spruce up UI again.. sans per move player effects.. but everything should be more compact.. and when incrementing we should scroll to latest.  Entire turn should be expressed in a unified UI.. perhaps we need a new sim message format..
+* multiple enemies
+
+* proper card import backed by DB
+*
 
 ## todo
 stage: UI for testing/enjouyment

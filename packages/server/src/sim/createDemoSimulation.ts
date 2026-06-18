@@ -65,6 +65,7 @@ export const createDemoSimulation = () => {
       mana: 3,
       deck: heroDeck,
       block: 0,
+      stats: { dex: 0, str: 0 }
     },
     "ironclad"
   );
@@ -76,6 +77,7 @@ export const createDemoSimulation = () => {
       mana: 1,
       deck: enemyDeck,
       block: 0,
+      stats: { dex: 0, str: 0 }
     },
     "test-dummy",
     true,
