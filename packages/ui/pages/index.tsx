@@ -7,7 +7,7 @@ import {
   Switch,
 } from '@mui/material'
 import { eventMessageParser, SimulationMessage } from 'shared'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { consumeSimStream } from '../util/stream'
 import { SimMessage } from '../components/sim-message'
 
@@ -18,9 +18,11 @@ const HomePage: NextPage = () => {
   const [simMessages, setSimMessages] = useState<SimulationMessage[]>([])
   const [simIndex, setSimIndex] = useState<number>(-1)
   const [showAllSimMessages, setShowAllSimMessages] = useState<boolean>(false)
+  const shouldScrollToLatestRef = useRef<boolean>(false)
 
   const handleIncrementState = useCallback(() => {
     if (simIndex < simMessages.length - 1) {
+      shouldScrollToLatestRef.current = true
       setSimIndex(simIndex + 1)
     }
   }, [setSimIndex, simMessages, simIndex])
@@ -29,11 +31,37 @@ const HomePage: NextPage = () => {
     setSimIndex(0)
   }, [setSimIndex])
 
+  const handleShowAllSimMessagesChange = useCallback(
+    (checked: boolean) => {
+      if (checked) {
+        shouldScrollToLatestRef.current = true
+      }
+      setShowAllSimMessages(checked)
+    },
+    [setShowAllSimMessages],
+  )
+
   const visibleSimMessages = showAllSimMessages
     ? simMessages
     : simIndex >= 0
       ? simMessages.slice(0, simIndex + 1)
       : []
+
+  useEffect(() => {
+    if (!shouldScrollToLatestRef.current) {
+      return
+    }
+
+    shouldScrollToLatestRef.current = false
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.scrollTo({
+          top: Number.MAX_SAFE_INTEGER,
+          behavior: 'auto',
+        })
+      })
+    })
+  }, [simIndex, visibleSimMessages.length])
 
   useEffect(() => {
     if (simStreamCloseTimer) {
@@ -122,9 +150,7 @@ const HomePage: NextPage = () => {
             control={
               <Switch
                 checked={showAllSimMessages}
-                onChange={(event) =>
-                  setShowAllSimMessages(event.target.checked)
-                }
+                onChange={(event) => handleShowAllSimMessagesChange(event.target.checked)}
               />
             }
             label="Show all"
@@ -151,7 +177,9 @@ const HomePage: NextPage = () => {
         {/* <Deck cards={deckOCards} /> */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {visibleSimMessages.map((m, index) => (
-            <SimMessage key={index} message={m} />
+            <Box key={index}>
+              <SimMessage message={m} />
+            </Box>
           ))}
         </Box>
       </Container>

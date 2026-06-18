@@ -130,9 +130,10 @@ export const TurnSummaryMessageZ = z.object({
   type: z.literal(EventMessageType.TURN_SUMMARY),
   idx: z.number(),
   playerToMove: z.string(),
+  otherPlayer: z.string(),
   playerToMoveHand: z.array(SerializableCardZ),
   moves: z.array(SerializableCardZ),
-  effects: z.record(z.string(), CardEffectZ), // key is player name
+  effects: z.array(z.record(z.string(), CardEffectZ)), // key is player name
   before: z.array(PlayerStatusMessageZ),
   after: z.array(PlayerStatusMessageZ)
 })
@@ -141,9 +142,10 @@ export type TurnSummaryMessage = {
   type: EventMessageType.TURN_SUMMARY
   idx: number
   playerToMove: string
+  otherPlayer: string
   playerToMoveHand: SerializableCard[]
   moves: SerializableCard[]
-  effects: Record<string, CardEffect>
+  effects: Array<Record<string, CardEffect>>
   before: PlayerStatusMessage[]
   after: PlayerStatusMessage[]
 }

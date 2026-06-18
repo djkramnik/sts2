@@ -50,13 +50,18 @@ export class Match {
     while (this.winner === null) {
       await this.tick()
     }
+    const winnerName = this.winner === 0 ? this.player.name : this.enemy.name
     sendSimMessage({
       type: EventMessageType.MATCH_BOUNDARY,
       idx: this.turn,
       kind: 'end',
       playerName: this.player.name,
       enemyName: this.enemy.name,
-      winnerName: this.winner === 0 ? this.player.name : this.enemy.name,
+      winnerName,
+    })
+    sendSimMessage({
+      type: EventMessageType.PRINT_MESSAGE,
+      message: `Match winner: ${winnerName}`,
     })
     return this.winner
   }
@@ -73,14 +78,13 @@ export class Match {
       }
     }
 
-    const playerCardEffects: Record<string, CardEffect> = {}
-    playerCardEffects[playerToMove.name] = {}
-    playerCardEffects[otherPlayer.name] = {}
+    const playerCardEffects: Array<Record<string, CardEffect>> = []
 
     const turnSummary: TurnSummaryMessage = {
       type: EventMessageType.TURN_SUMMARY,
       idx: this.turn,
       playerToMove: playerToMove.name,
+      otherPlayer: otherPlayer.name,
       playerToMoveHand: serializeCards(playerToMove.hand),
       effects: playerCardEffects,
       before: [playerStatusMessage(this.player), playerStatusMessage(this.enemy)],
@@ -94,7 +98,11 @@ export class Match {
       this.turn,
     )) {
       turnSummary.moves.push(serializeCards([card])[0])
-      this.applyCard(playerToMove, otherPlayer, card, playerCardEffects)
+      const moveEffects: Record<string, CardEffect> = {}
+      moveEffects[playerToMove.name] = {}
+      moveEffects[otherPlayer.name] = {}
+      playerCardEffects.push(moveEffects)
+      this.applyCard(playerToMove, otherPlayer, card, moveEffects)
     }
     turnSummary.after = [
       playerStatusMessage(this.player),
@@ -128,7 +136,7 @@ export class Match {
     // and also the deltas / effects so we can communicate it back to client
     // this will scale poorly as variety of effects grow
     effects[target.name].hp = effectiveAttack * -1
-    effects[target.name].block = effectiveAttack * - 1
+    effects[target.name].block = (attack - effectiveAttack) * - 1
     effects[source.name].block = defense
 
     const cardIndex = source.hand.indexOf(card)
