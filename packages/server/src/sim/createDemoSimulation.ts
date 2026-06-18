@@ -56,7 +56,7 @@ export const createDemoSimulation = () => {
     bash(),
   ];
 
-  const enemyDeck = [strike(), strike(), defend()];
+  const enemyDeck = [strike(), strike(), defend(), defend(), defend()];
 
   const hero = new Player(
     {
@@ -74,10 +74,10 @@ export const createDemoSimulation = () => {
     {
       maxHp: 40,
       hp: 40,
-      mana: 1,
+      mana: 3,
       deck: enemyDeck,
       block: 0,
-      stats: { dex: 2, str: 2 }
+      stats: { dex: 20, str: 2 }
     },
     "test-dummy",
     true,

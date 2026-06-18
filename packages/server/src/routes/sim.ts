@@ -47,6 +47,7 @@ simRouter.get('/stream', async (request: Request, response: Response) => {
       response.end()
     }
   } catch (error) {
+    console.log('ERROR', error)
     const message = error instanceof Error ? error.message : String(error)
     if (!streamClosed) {
       writeSseEvent(response, 'error', { message })
