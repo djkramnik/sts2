@@ -89,7 +89,7 @@ const HomePage: NextPage = () => {
           position: 'fixed',
           backgroundColor: '#eee',
           width: '100vw',
-          zIndex: 1
+          zIndex: 2
         }}
       >
         <Container maxWidth="md" sx={{

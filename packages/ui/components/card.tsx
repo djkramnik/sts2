@@ -95,9 +95,18 @@ export const Deck = ({
         alignItems: 'center',
       }}
     >
-      {cards.map((c, index) => (
-        <CardElem key={index} card={c} greyed={index > 0} />
-      ))}
+      {cards.map((c, index) => {
+        const highlightIdx = Array.isArray(highlights)
+          ? highlights.indexOf(c.id)
+          : -1
+        return (
+          <CardElem
+            highlightIdx={highlightIdx >= 0 ? highlightIdx : undefined}
+            key={index} card={c} greyed={index > 0}
+          />
+        )
+      }
+    )}
     </Box>
   )
 }
