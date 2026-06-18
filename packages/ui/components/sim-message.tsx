@@ -11,6 +11,7 @@ import {
 import { SimulationMessage, PrintMessage, EventMessageType, MatchBoundaryMessage, TurnBoundaryMessage, PlayerHandMessage, PlayerStatusMessage, PlayerMoveMessage } from "shared";
 import { Capitalize } from "./capitalize";
 import { Deck } from "./card";
+import { TurnSummaryMessageElem } from "./turn-summary-message";
 
 export const SimMessage = ({ message }: { message: SimulationMessage}) => {
   switch (message.type) {
@@ -26,6 +27,8 @@ export const SimMessage = ({ message }: { message: SimulationMessage}) => {
       return <PlayerStatusElem { ...message} />
     case EventMessageType.PLAYER_MOVE:
       return <PlayerMoveElem { ...message} />
+    case EventMessageType.TURN_SUMMARY:
+      return <TurnSummaryMessageElem {...message} />
     default:
       return <p>{JSON.stringify(message)}</p>
   }

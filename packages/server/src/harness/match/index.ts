@@ -135,11 +135,6 @@ export class Match {
     if (cardIndex >= 0) {
       source.discardOne(cardIndex)
     }
-    const cardMessage = serializeCards([card])[0]
-    sendSimMessage({
-      type: EventMessageType.PLAYER_MOVE,
-      card: cardMessage
-    })
   }
 
   isGameOver(): 0 | 1 | null {
