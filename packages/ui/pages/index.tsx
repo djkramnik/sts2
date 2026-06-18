@@ -4,46 +4,15 @@ import {
   Button,
   Container,
   FormControlLabel,
-  Stack,
   Switch,
 } from '@mui/material'
-import { Card, eventMessageParser, SimulationMessage } from 'shared'
-import { Deck } from '../components/card'
+import { eventMessageParser, SimulationMessage } from 'shared'
 import { useCallback, useEffect, useState } from 'react'
 import { consumeSimStream } from '../util/stream'
 import { SimMessage } from '../components/sim-message'
 
 let simStream: EventSource | null = null
 let simStreamCloseTimer: ReturnType<typeof setTimeout> | null = null
-
-const getRandomUUID = () => new Date().getTime().toString()
-
-const sample = new Card(
-  {
-    name: 'Strike',
-    flavor: 'A straightforward attack.',
-  },
-  {
-    cost: 1,
-    attack: 6,
-    defense: 0,
-  },
-  getRandomUUID,
-)
-const sample2 = new Card(
-  {
-    name: 'Defend',
-    flavor: 'Basic protection.',
-  },
-  {
-    cost: 1,
-    attack: 0,
-    defense: 5,
-  },
-  getRandomUUID,
-)
-
-const deckOCards = [sample.serialize(), sample2.serialize()]
 
 const HomePage: NextPage = () => {
   const [simMessages, setSimMessages] = useState<SimulationMessage[]>([])
@@ -169,7 +138,7 @@ const HomePage: NextPage = () => {
           </Button>
         </Container>
       </Box>
-      <Box height={8} />
+      <Box height={56} />
       <Container
         maxWidth="md"
         sx={{

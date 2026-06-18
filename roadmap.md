@@ -3,6 +3,18 @@
 * ~for now just render the simulation events as they are.. and then have to think about..
 probably sending more info in the simulation events. and then sprucing up UI one more time
 we will go with a DUMB client / UI.  so UI will not attempt to replicate game state on its end.  just dumbly render what the server is sending it~
+* per turn
+
+brainstorming the UI for a turn
+a two column headerless table:
+
+moved: icon
+player status
+enemy status
+hand: player to move's hand
+turn x: card. effects on each player
+player status
+enemy status
 
 * spruce up UI again.. sans per move player effects.. but everything should be more compact.. and when incrementing we should scroll to latest.  Entire turn should be expressed in a unified UI.. perhaps we need a new sim message format..
 

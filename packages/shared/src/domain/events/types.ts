@@ -5,6 +5,7 @@ import z from "zod";
 import { SerializableCardZ, type SerializableCard } from "../../card";
 
 export enum EventMessageType {
+  TURN_SUMMARY = 'TURN_SUMMARY',
   PLAYER_STATUS = 'PLAYER_STATUS',
   MATCH_BOUNDARY = 'MATCH_BOUNDARY',
   TURN_BOUNDARY = 'TURN_BOUNDARY',
@@ -14,6 +15,7 @@ export enum EventMessageType {
 }
 
 export type SimulationMessage =
+  | TurnSummaryMessage
   | PlayerStatusMessage
   | MatchBoundaryMessage
   | TurnBoundaryMessage
@@ -113,3 +115,31 @@ export type PlayerMoveMessage = {
   card: SerializableCard
 }
 ;({} as PlayerMoveMessage satisfies z.infer<typeof PlayerMoveMessageZ>)
+
+
+// turn summary saga
+const CardEffectZ = z.object({
+  block: z.number().optional(),
+  hp: z.number().optional()
+})
+type CardEffect = Partial<Pick<PlayerStatusMessage, 'block' | 'hp'>>
+
+export const TurnSummaryMessageZ = z.object({
+  type: z.literal(EventMessageType.TURN_SUMMARY),
+  playerToMove: z.string(),
+  turn: z.array(SerializableCardZ),
+  effects: z.record(z.string(), CardEffectZ), // key is player name
+  before: z.array(PlayerStatusMessageZ),
+  after: z.array(PlayerStatusMessageZ)
+})
+
+export type TurnSummaryMessage = {
+  type: EventMessageType.TURN_SUMMARY
+  playerToMove: string
+  turn: SerializableCard[]
+  effects: Record<string, CardEffect>
+  before: PlayerStatusMessage[]
+  after: PlayerStatusMessage[]
+}
+
+;({} as TurnSummaryMessage satisfies z.infer<typeof TurnSummaryMessageZ>)
