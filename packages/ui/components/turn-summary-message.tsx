@@ -12,7 +12,6 @@ import {
 import { Deck } from "./card";
 
 export const TurnSummaryMessageElem = (message: TurnSummaryMessage) => {
-  // return <p>HI ! {JSON.stringify(message)}</p>
   return (
     <Card sx={{ padding: 3 }}>
       <Typography fontWeight={600} component="h2">
@@ -21,7 +20,8 @@ export const TurnSummaryMessageElem = (message: TurnSummaryMessage) => {
       <PlayerIcon
         player={message.before.find(p => p.name === message.playerToMove)!}
       />
-      <Deck cards={message.playerToMoveHand} />
+      <Deck highlights={message.moves.map(m => m.id)}
+        cards={message.playerToMoveHand} />
     </Card>
   )
 }
